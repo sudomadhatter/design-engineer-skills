@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# ui-ux-pro-max writes generated design systems here when run with --persist
+design-system/
