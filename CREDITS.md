@@ -38,6 +38,16 @@ no Poimandres source code is vendored here.
 [`vercel-labs/vgpu`](https://github.com/vercel-labs/vgpu) and raw WebGPU / WGSL. Again:
 documentation, not vendored source.
 
+## Sam Asante & Callstack — optical liquid glass for web and mobile
+
+[`skills/apple-glass`](skills/apple-glass/SKILL.md) and its
+[`RECIPES.md`](skills/apple-glass/RECIPES.md) document and recommend:
+
+- [`@samasante/liquid-glass`](https://github.com/samasante/liquid-glass) by **Sam Asante** — live-DOM optical refraction via WebKit-hardened SVG Signed Distance Field (SDF) displacement filters.
+- [`@callstack/liquid-glass`](https://github.com/callstack/liquid-glass) by **Callstack** — React Native bridge to native Apple glass materials.
+
+Both libraries are open source under their respective licences. This pack ships documentation, architecture standards, and component recipes only.
+
 ## Everything else
 
 `ui-ux-pro-max` (design-system data and search scripts), `webm-alpha-video`, `animate-expo`,
