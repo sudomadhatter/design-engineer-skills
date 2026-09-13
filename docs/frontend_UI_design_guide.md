@@ -2,18 +2,19 @@
 
 **The house standard for world-class, fluid, production-ready interfaces.** This procedural guide establishes how agents and operators design, build, animate, and audit user interfaces across all projects.
 
-Consolidates the five pillars of house UI craft:
+Consolidates the six pillars of house UI craft:
 1. **Design System & Visual Intelligence**: [`skills/ui-ux-pro-max`](../skills/ui-ux-pro-max/SKILL.md) — 67 styles, 96 color palettes, 57 font pairings, 99 UX heuristics, and stack guidelines via `search.py`.
 2. **Master Motion Engine & Fluid Interactions**: [`skills/emil-design-eng`](../skills/emil-design-eng/SKILL.md) — Consolidated Emil Kowalski motion craft, Apple 2-parameter spring physics, 4-gate opportunity filter, sub-300ms budget, and Before/After review tables.
 3. **WebGPU Shader Engine**: [`skills/vgpu`](../skills/vgpu/SKILL.md) — `vercel-labs/vgpu`, typed WGSL shaders, fullscreen fluid meshes, interactive plasma backdrops, particle compute, ~25KB bundle, and zero-GPU headless CI test adapters.
-4. **3D Spatial Models & Physical Materials**: [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) — Complete Poimandres suite ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber), Drei, Postprocessing, Rapier), glTF product models (`gltfjsx`), and physical optical transmission glass (`MeshTransmissionMaterial`).
-5. **Rich Media & Platform Specialists**: [`skills/webm-alpha-video`](../skills/webm-alpha-video/SKILL.md) (green-screen to alpha WebM), [`skills/animate-expo`](../skills/animate-expo/SKILL.md) (React Native / Expo), [`skills/write-swift`](../skills/write-swift/SKILL.md) (iOS native).
+4. **Mobile-First Apple Glass & Materials**: [`skills/apple-glass`](../skills/apple-glass/SKILL.md) — Apple HIG frosted glass (CSS/Tailwind with 180% saturation boost), optical liquid glass refraction over live DOM ([`@samasante/liquid-glass`](https://github.com/samasante/liquid-glass)), and native mobile bridges (React Native and SwiftUI iOS 26).
+5. **3D Spatial Models & Physical Materials**: [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) — Complete Poimandres suite ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber), Drei, Postprocessing, Rapier), glTF product models (`gltfjsx`), and 3D spatial transmission meshes.
+6. **Rich Media & Platform Specialists**: [`skills/webm-alpha-video`](../skills/webm-alpha-video/SKILL.md) (green-screen to alpha WebM), [`skills/animate-expo`](../skills/animate-expo/SKILL.md) (React Native / Expo), [`skills/write-swift`](../skills/write-swift/SKILL.md) (iOS native).
 
 Front door: **`/smh-designer`** ([`commands/smh-designer.md`](../commands/smh-designer.md)) — activates **🦋 Caterpillar** with the Two-Phase Creative Vision Lock lifecycle.
 
 ---
 
-## 1. The Five Pillars of UI Excellence
+## 1. The Six Pillars of UI Excellence
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -24,10 +25,10 @@ Front door: **`/smh-designer`** ([`commands/smh-designer.md`](../commands/smh-de
 │   (styles, palettes, fonts,  │   (Apple springs, sub-300ms, │   (WGSL, 25KB,│
 │    heuristics, search)       │    review audit tables)      │    fluid mesh)│
 ├──────────────────────────────┼──────────────────────────────┼───────────────┤
-│ 4. 3D & PHYSICAL MATERIALS   │ 5. PLATFORM SPECIALISTS      │ 6. MAESTRO    │
-│ • visual-fx-3d               │ • webm-alpha-video (WebM)    │ •/smh-designer│
-│   (R3F 3D spatial models,    │ • animate-expo (RN Reanimated│   (Two-phase  │
-│    glTF scenes, Drei glass)  │ • write-swift (Native Swift) │    vision lock│
+│ 4. MOBILE APPLE GLASS        │ 5. 3D SPATIAL MODELS         │ 6. SPECIALISTS│
+│ • apple-glass                │ • visual-fx-3d               │ • webm-alpha  │
+│   (HIG frosted 180% saturate,│   (R3F 3D spatial scenes,    │ • animate-expo│
+│    live DOM liquid refraction│    glTF models, Rapier)      │ • write-swift │
 └──────────────────────────────┴──────────────────────────────┴───────────────┘
 ```
 
@@ -126,19 +127,26 @@ Before writing any animation code, walk these four questions in order:
 
 ---
 
-## 4. WebGPU Shaders (`vgpu`) & 3D Spatial Models (`visual-fx-3d`)
+## 4. WebGPU Shaders (`vgpu`), Apple Glass (`apple-glass`) & 3D Spatial Models (`visual-fx-3d`)
 
-Modern interfaces incorporate physical depth, optical light refraction, and GPU-accelerated fluid shaders. We enforce a clean two-tier engine separation:
+Modern interfaces incorporate physical depth, optical light refraction, and GPU-accelerated fluid shaders. We enforce a clean three-tier engine separation:
 
-### A. WebGPU Shader & Compute Engine ([`vgpu`](../skills/vgpu/SKILL.md))
+### A. WebGPU Shader & Compute Engine ([`skills/vgpu`](../skills/vgpu/SKILL.md))
 - **Primary Use:** Fullscreen ambient fluid meshes, interactive plasma backdrops, audio-reactive ripples, and particle compute simulations.
 - **Bundle Efficiency:** ~25KB gzipped (10x smaller than Three.js).
 - **Headless CI Testing:** Deterministic execution without physical GPU hardware using `@vgpu/adapter-mock` and `@vgpu/adapter-node`.
 - **Mandatory Mobile Guard:** WebGPU is unsupported on iOS $\le 17$, older Android, and default Linux Firefox. Always verify `navigator.gpu` and provide a graceful CSS gradient or SVG backdrop.
 
-### B. 3D Spatial Models & Physical Materials ([`visual-fx-3d`](../skills/visual-fx-3d/SKILL.md))
-- **Primary Use:** Complete Poimandres suite ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber), `@react-three/drei`, `@react-three/postprocessing`, `@react-three/rapier`), glTF/GLB product models compiled via `gltfjsx`, tactile spring-damped tilt cards (`PresentationControls`), spatial lighting, and Apple VisionOS physical optical glass (`MeshTransmissionMaterial`). See [`CATALOG.md`](../skills/visual-fx-3d/CATALOG.md) and [`RECIPES.md`](../skills/visual-fx-3d/RECIPES.md).
-- **Constraints:** Always use `frameloop="demand"` and cap `dpr={[1, 1.5]}` so the GPU completely idles when static. Halt rendering when off-screen via `IntersectionObserver`. Never stack two refractive layers directly over each other.
+### B. Mobile-First Apple Glass & Materials ([`skills/apple-glass`](../skills/apple-glass/SKILL.md))
+- **Primary Use:** Authentic Apple frosted glass (HIG) for web and mobile apps, plus true optical liquid glass refraction over live DOM elements without canvas hacks.
+- **Tier 1 (95% of UI):** Apple HIG Frosted Glass via CSS & Tailwind (`backdrop-blur-xl`, `backdrop-saturate-180`, `border border-white/20`, and top specular rim gradient). Zero JS overhead, locked 60/120fps on mobile Safari.
+- **Tier 2 (Physical Lenses):** [`@samasante/liquid-glass`](https://github.com/samasante/liquid-glass) using SVG Signed Distance Field (SDF) filters over live DOM elements. Real optical bending and chromatic dispersion with 0 dependencies (<5KB).
+- **Tier 3 (Native Mobile):** `@callstack/liquid-glass` for React Native / Expo, and SwiftUI iOS 26 `.glassEffect()` for native iOS.
+- **Strict Invariant:** Never use `html2canvas` screenshotting or Three.js 3D WebGL canvases for 2D UI elements. See [`RECIPES.md`](../skills/apple-glass/RECIPES.md) for complete components.
+
+### C. 3D Spatial Models & Geometry ([`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md))
+- **Primary Use:** Complete Poimandres suite ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber), `@react-three/drei`, `@react-three/postprocessing`, `@react-three/rapier`), glTF/GLB product models compiled via `gltfjsx`, tactile spring-damped tilt cards (`PresentationControls`), spatial lighting, and true 3D spatial transmission meshes. See [`CATALOG.md`](../skills/visual-fx-3d/CATALOG.md) and [`RECIPES.md`](../skills/visual-fx-3d/RECIPES.md).
+- **Constraints:** Always use `frameloop="demand"` and cap `dpr={[1, 1.5]}` so the GPU completely idles when static. Halt rendering when off-screen via `IntersectionObserver`. Reserved strictly for 3D meshes and spatial models, not HTML DOM UI.
 
 ---
 
@@ -182,7 +190,8 @@ When an agent needs to perform UI/UX work, route to the appropriate consolidated
 | Complete design systems, color palettes, font pairings, styles | [`skills/ui-ux-pro-max`](../skills/ui-ux-pro-max/SKILL.md) | `search.py --design-system` |
 | Motion craft, animations, easings, spring physics, review tables, toasts | [`skills/emil-design-eng`](../skills/emil-design-eng/SKILL.md) | `RECIPES.md` · Apple 2-parameter springs · Before/After tables |
 | WebGPU shaders, fullscreen ambient fluid meshes, interactive plasma, particle compute | [`skills/vgpu`](../skills/vgpu/SKILL.md) | typed WGSL · @vgpu/adapter-mock · mobile CSS fallback |
-| 3D spatial scenes, glTF models, geometric cards, physical optical glass | [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) | [`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber) · Drei · Postprocessing · Rapier |
+| Apple frosted glass (HIG), live DOM liquid refraction, native mobile glass | [`skills/apple-glass`](../skills/apple-glass/SKILL.md) | `RECIPES.md` · @samasante/liquid-glass · 120fps compositor · no canvas hacks |
+| 3D spatial scenes, glTF models, geometric cards, physical optical 3D meshes | [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) | [`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber) · Drei · Postprocessing · Rapier |
 | Mobile gestures & animations (React Native / Expo Reanimated) | [`skills/animate-expo`](../skills/animate-expo/SKILL.md) | Worklets & reanimated recipes |
 | Apple platform UI & native Swift motion | [`skills/write-swift`](../skills/write-swift/SKILL.md) | Native SwiftUI springs & gestures |
 | Converting green-screen assets to transparent WebM video overlays | [`skills/webm-alpha-video`](../skills/webm-alpha-video/SKILL.md) | ffmpeg colorkey scripts |

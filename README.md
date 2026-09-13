@@ -1,8 +1,8 @@
 # 🦋 design-engineer-skills
 
-**A Lead Design Engineer for your coding agent.** Nine interlocking skills and one command that turn
-an agent into a front-end craftsman: design systems, Apple spring physics, WebGPU shaders, React Three
-Fiber scenes, physical glass materials, and native mobile motion.
+**A Lead Design Engineer for your coding agent.** Ten interlocking skills and one command that turn
+an agent into a front-end craftsman: design systems, Apple spring physics, WebGPU shaders, optical
+liquid glass, React Three Fiber scenes, and native mobile motion.
 
 The front door is **`/smh-designer`**, which activates **🦋 Caterpillar** and runs a two-phase
 *Creative Vision Lock* — it agrees the aesthetic direction with you **before** it writes a line of
@@ -43,7 +43,7 @@ the README."** That is the whole install.
 >    at the top of `commands/smh-designer.md` still resolves from where you put the command file. If
 >    your layout differs from this pack's, **fix that one relative link** — it is the only path in the
 >    pack that depends on layout.
-> 6. Confirm to the operator that `/smh-designer` is available, and list the nine skills installed.
+> 6. Confirm to the operator that `/smh-designer` is available, and list the ten skills installed.
 >
 > **Do not** edit the skill bodies during install. If something does not fit the operator's harness,
 > say so rather than improvising.
@@ -64,7 +64,8 @@ it exists so the same `/smh-designer` works in harnesses whose menus read skills
 | [`ui-ux-pro-max`](skills/ui-ux-pro-max/SKILL.md) | 67 styles, 96 palettes, 57 font pairings, 99 UX heuristics, per-stack guidelines. Searchable via `scripts/search.py`. |
 | [`emil-design-eng`](skills/emil-design-eng/SKILL.md) | Motion craft — Apple 2-parameter springs, the 4-gate opportunity filter, sub-300ms budget, Before/After review tables. |
 | [`vgpu`](skills/vgpu/SKILL.md) | WebGPU shaders — typed WGSL, fullscreen fluid meshes, interactive plasma, particle compute, headless CI adapters. |
-| [`visual-fx-3d`](skills/visual-fx-3d/SKILL.md) | The Poimandres suite — R3F, Drei, Postprocessing, Rapier, glTF models, physical transmission glass. Plus [`CATALOG.md`](skills/visual-fx-3d/CATALOG.md) (100+ components) and [`RECIPES.md`](skills/visual-fx-3d/RECIPES.md). |
+| [`apple-glass`](skills/apple-glass/SKILL.md) | Mobile-first Apple frosted & liquid glass — Tier 1 CSS 180% saturation boost (120fps compositor), Tier 2 live DOM refraction via `@samasante/liquid-glass`, Tier 3 native `@callstack/liquid-glass` / SwiftUI `.glassEffect()`. Strict ban on desktop `html2canvas` and Three.js canvas hacks for 2D UI. Plus [`RECIPES.md`](skills/apple-glass/RECIPES.md). |
+| [`visual-fx-3d`](skills/visual-fx-3d/SKILL.md) | The Poimandres suite — R3F, Drei, Postprocessing, Rapier, glTF models, spatial 3D scenes (reserved for 3D meshes, not DOM UI). Plus [`CATALOG.md`](skills/visual-fx-3d/CATALOG.md) (100+ components) and [`RECIPES.md`](skills/visual-fx-3d/RECIPES.md). |
 | [`webm-alpha-video`](skills/webm-alpha-video/SKILL.md) | Green-screen to transparent alpha WebM overlays. |
 | [`animate-expo`](skills/animate-expo/SKILL.md) | React Native / Expo motion — Reanimated, Gesture Handler, haptics. |
 | [`write-swift`](skills/write-swift/SKILL.md) | Native iOS / Swift. |
@@ -100,6 +101,9 @@ These are non-negotiable in every response Caterpillar gives:
 
 - **Mobile first, always.** Base CSS is the phone; `min-width` enhances outward. Never a `max-width`
   query that subtracts from a desktop baseline.
+- **Mobile-first glass, always.** 120fps hardware-composited Tier 1 CSS/Tailwind (backdrop-filter + 180%
+  saturation boost + specular rim highlight) for 95% of UI. Tier 2 live DOM refraction (`@samasante/liquid-glass`)
+  for physical lenses. Strict ban on `html2canvas` and Three.js canvas hacks for 2D UI.
 - **Dual-viewport verification.** Any spec asserting geometry runs at both a phone and a desktop size.
 - **Sub-300ms UI budget**, `transform`/`opacity` only, **never `ease-in`**, never animate from
   `scale(0)`.
@@ -116,7 +120,7 @@ python3 verify.py
 ```
 
 Checks that no absolute paths survived, every relative link resolves, the `ui-ux-pro-max` scripts
-compile and return real results, and all nine skills are present at full file count. Standard library
+compile and return real results, and all ten skills are present at full file count. Standard library
 only — no install step.
 
 ## Requirements

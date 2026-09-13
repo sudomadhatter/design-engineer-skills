@@ -18,6 +18,7 @@ MANIFEST = {
     "ui-ux-pro-max": 28,
     "emil-design-eng": 2,
     "vgpu": 1,
+    "apple-glass": 2,
     "visual-fx-3d": 3,
     "webm-alpha-video": 1,
     "animate-expo": 2,
@@ -122,7 +123,7 @@ for skill, count in MANIFEST.items():
     actual = sum(1 for p in walk() if rel(p).startswith(f"skills/{skill}/"))
     if actual != count:
         missing.append(f"{skill}: {actual} files, expected {count}")
-row("F    all 8 skills present at full file count", not missing,
+row(f"F    all {len(MANIFEST)} skills present at full file count", not missing,
     missing[0] if missing else f"{len(MANIFEST)} skills, {sum(MANIFEST.values())} files")
 
 # --- report -----------------------------------------------------------------
