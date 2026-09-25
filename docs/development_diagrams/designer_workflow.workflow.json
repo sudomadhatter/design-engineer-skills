@@ -1,0 +1,288 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "/smh-designer — Creative Vision Lock Lifecycle",
+    "subtitle": "How to design tactile, production-ready interfaces with 🦋 Caterpillar: Two-Phase Creative Vision Lock from prompt to implementation",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "full-lifecycle",
+        "label": "Complete Vision Lock",
+        "focus": [
+          "user_intent",
+          "creative_interview",
+          "vision_brief",
+          "vision_gate",
+          "technical_translation",
+          "plan_gate",
+          "build_handoff"
+        ],
+        "note": "Prompt, interview, Creative Vision Brief, vision approval STOP, implementation plan, plan approval STOP, and build execution."
+      },
+      {
+        "id": "two-stops",
+        "label": "The Two Approval Stops",
+        "focus": [
+          "vision_brief",
+          "vision_gate",
+          "technical_translation",
+          "plan_gate"
+        ],
+        "note": "Where Caterpillar stops for you: aesthetic alignment before architecture, and architecture approval before code."
+      },
+      {
+        "id": "seven-pillars",
+        "label": "Creative Craft Engines",
+        "focus": [
+          "creative_interview",
+          "vision_brief",
+          "technical_translation"
+        ],
+        "note": "Grounding in the 7 craft engines: design systems, Apple springs, shaders, glass, 3D scenes, mobile motion, and border beams."
+      }
+    ],
+    "output": "docs/development_diagrams/designer_workflow.html"
+  },
+  "lanes": [
+    {
+      "id": "operator",
+      "label": "Operator (You)",
+      "variant": "normal"
+    },
+    {
+      "id": "caterpillar",
+      "label": "🦋 Caterpillar (Lead Design Engineer)",
+      "variant": "normal"
+    },
+    {
+      "id": "build-lane",
+      "label": "Build Lane / Coding Agent",
+      "variant": "normal"
+    }
+  ],
+  "phases": [
+    {
+      "id": "p0",
+      "label": "1. Intent & Menu",
+      "fromCol": 0,
+      "toCol": 0,
+      "variant": "default"
+    },
+    {
+      "id": "p1",
+      "label": "2. Creative Discovery",
+      "fromCol": 1,
+      "toCol": 1,
+      "variant": "default"
+    },
+    {
+      "id": "p2",
+      "label": "3. Vision Lock",
+      "fromCol": 2,
+      "toCol": 2,
+      "variant": "emphasis"
+    },
+    {
+      "id": "p3",
+      "label": "4. Technical Plan",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "p4",
+      "label": "5. Build & Ship",
+      "fromCol": 4,
+      "toCol": 4,
+      "variant": "emphasis"
+    }
+  ],
+  "groups": [
+    {
+      "id": "g1",
+      "label": "Phase 1: Creative Discovery & Vision Lock",
+      "lane": "caterpillar",
+      "fromCol": 0,
+      "toCol": 2,
+      "variant": "default"
+    },
+    {
+      "id": "g2",
+      "label": "Phase 2: Technical Translation & Hand-off",
+      "lane": "caterpillar",
+      "fromCol": 3,
+      "toCol": 4,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "user_intent",
+    "creative_interview",
+    "vision_brief",
+    "vision_gate",
+    "technical_translation",
+    "plan_gate",
+    "build_handoff"
+  ],
+  "nodes": [
+    {
+      "id": "user_intent",
+      "lane": "operator",
+      "col": 0,
+      "type": "frontend",
+      "label": "Launch Intent",
+      "sublabel": "/smh-designer",
+      "tag": "vibe / physics / fx",
+      "width": 128,
+      "description": "Invoke /smh-designer with natural language intent (e.g. 'frosted glass pricing card with sunset border beam') or explore the 10-category interactive capabilities menu.",
+      "details": [
+        "Direct Intent Dispatch: Prompts with arguments skip menus and immediately begin Phase 1 Creative Discovery.",
+        "Capabilities Menu: Interactive menu covering [BS] Brainstorm, [DS] Design Systems, [FM] Fluid Motion, [WG] WebGPU Shaders, [LG] Apple Glass, [3D] Spatial UI, [BB] Border Beam & Glows, [AV] Alpha Video, [AU] Design Audit, [CD] Scaffold.",
+        "Express Lane: Trivial single-line styling tweaks skip the ceremony and make the fix directly."
+      ]
+    },
+    {
+      "id": "creative_interview",
+      "lane": "caterpillar",
+      "col": 1,
+      "type": "backend",
+      "label": "Creative Discovery",
+      "sublabel": "Shared Vocabulary",
+      "tag": "five-slot formula",
+      "width": 128,
+      "description": "Caterpillar interviews you on visual emotion, tactile materials, and interaction momentum before writing any code or architecture.",
+      "details": [
+        "Shared Vocabulary: Fills the five request slots — WHERE (viewport/state), WHAT (screen/component), WHICH LAYER (stroke/glow/bloom), WHICH KNOB (reach/speed/strength), HOW MUCH.",
+        "Tactile Grounding: Pins down whether surfaces need Apple frosted glass, live DOM liquid glass refraction, WebGPU plasma backdrops, or optical border glows.",
+        "Non-Negotiable Invariants: Mobile-first viewport baseline, sub-300ms UI animation budget, never ease-in, never animate from scale(0)."
+      ]
+    },
+    {
+      "id": "vision_brief",
+      "lane": "caterpillar",
+      "col": 2,
+      "type": "cloud",
+      "label": "Vision Brief",
+      "sublabel": "Aesthetic Direction",
+      "tag": "locked palette & curves",
+      "width": 128,
+      "description": "Synthesizes discovery into a formal Creative Vision Brief specifying palettes, typography, motion curves, and optical materials.",
+      "details": [
+        "Design Tokens: Curated color palette (e.g. Ocean, Sunset, Obsidian), typography hierarchy, and spacing tokens via ui-ux-pro-max.",
+        "Spring Physics: Precise Apple 2-parameter spring curves (e.g. 0.35s critically damped) and tactile micro-interaction press feedback.",
+        "Shaders & FX: Verified shader parameters, border beam travel presets, and 2D canvas AI Thinking Indicators."
+      ]
+    },
+    {
+      "id": "vision_gate",
+      "lane": "operator",
+      "col": 2,
+      "type": "security",
+      "label": "⛔ Stop 1: Vision Gate",
+      "sublabel": "Operator Confirmation",
+      "tag": "literal 'Approved'",
+      "width": 160,
+      "description": "First mandatory approval stop. Caterpillar halts execution until you review the brief and confirm: 'Approved'.",
+      "details": [
+        "Zero Blind Coding: Guarantees no agent spends tokens building an interface whose look and feel was never agreed.",
+        "Strict Gate Trigger: Refuses vague affirmations like 'looks good' or 'continue' — requires explicit approval.",
+        "Iterative Refinement: Easy to adjust mood, speed, or materials in conversation before architecture begins."
+      ]
+    },
+    {
+      "id": "technical_translation",
+      "lane": "caterpillar",
+      "col": 3,
+      "type": "backend",
+      "label": "Technical Plan",
+      "sublabel": "implementation_plan.md",
+      "tag": "props & constraints",
+      "width": 128,
+      "description": "Translates the approved visual direction into an engineering-grade implementation plan with component breakdown and performance constraints.",
+      "details": [
+        "Component Architecture: TSX component decomposition, clean prop interfaces, and state boundaries.",
+        "Hardware-Composited Rules: GPU acceleration (transform and opacity only), sub-pixel mask composites, and ~30fps rAF pulse driver.",
+        "Dual-Viewport QA Plan: Test specifications measuring layout and visual correctness at both phone (375x667) and desktop viewports."
+      ]
+    },
+    {
+      "id": "plan_gate",
+      "lane": "operator",
+      "col": 3,
+      "type": "security",
+      "label": "⛔ Stop 2: Plan Gate",
+      "sublabel": "Architecture Sign-off",
+      "tag": "literal 'Approved'",
+      "width": 160,
+      "description": "Second mandatory approval stop. The operator reviews the technical implementation plan, prop contracts, and test criteria.",
+      "details": [
+        "Final Checkpoint: Validates bundle size limits, mobile battery constraints, and component layout before code generation.",
+        "Command Boundary: This is where /smh-designer deliberately finishes — it delivers an agreed plan, ready for execution.",
+        "Full Operator Control: No surprises, regressions, or uncontrolled dependency sprawl."
+      ]
+    },
+    {
+      "id": "build_handoff",
+      "lane": "build-lane",
+      "col": 4,
+      "type": "frontend",
+      "label": "Build & Verify",
+      "sublabel": "Any Coding Agent",
+      "tag": "plan to reality",
+      "width": 128,
+      "description": "Hand off the approved plan directly to your coding agent or build lane (Claude Code, Cursor, Codex, OpenCode, or manual implementation).",
+      "details": [
+        "Straight to Build: The implementation plan's verification section is structured to be executable as-is.",
+        "Ticket-First Option: Mint a tracking item (Jira, GitHub Issues, Linear) from the acceptance criteria if desired.",
+        "Production Delivery: Component implementation, responsive testing, and final visual polish review."
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_intent_interview",
+      "from": "user_intent",
+      "to": "creative_interview",
+      "label": "prompt intent",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e_interview_brief",
+      "from": "creative_interview",
+      "to": "vision_brief",
+      "label": "synthesize vibe",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e_brief_gate",
+      "from": "vision_brief",
+      "to": "vision_gate",
+      "label": "present for sign-off",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e_gate_translation",
+      "from": "vision_gate",
+      "to": "technical_translation",
+      "label": "approved vision",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e_translation_plan_gate",
+      "from": "technical_translation",
+      "to": "plan_gate",
+      "label": "present tech plan",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e_plan_gate_build",
+      "from": "plan_gate",
+      "to": "build_handoff",
+      "label": "approved plan",
+      "variant": "emphasis"
+    }
+  ]
+}

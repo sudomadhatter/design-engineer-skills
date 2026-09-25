@@ -17,6 +17,7 @@ MANIFEST = {
     "smh-designer": 1,
     "ui-ux-pro-max": 28,
     "emil-design-eng": 2,
+    "border-beam": 2,
     "vgpu": 1,
     "apple-glass": 2,
     "visual-fx-3d": 3,

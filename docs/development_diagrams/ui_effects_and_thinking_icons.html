@@ -1,0 +1,2785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Design Vocabulary</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* Base Optical Defaults & Font Smoothing */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #080b11;
+      color: #f1f5f9;
+    }
+
+    /* Hardware-accelerated sub-pixel masking helpers */
+    .mask-composite-exclude {
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    /* Smoked glass base token */
+    .obsidian-smoked-glass {
+      background: rgba(10, 14, 23, 0.72);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* ── Vocabulary sections (SCC-186, 2026-09-23) ── */
+    html { scroll-behavior: smooth; }
+    .vocab-card { background: #0f1420; border: 1px solid rgba(255, 255, 255, 0.10); border-radius: 1rem; padding: 1.25rem; }
+    .vocab-term { color: #fff; font-weight: 700; }
+    .vocab-say { color: #67e8f9; font-style: italic; }
+    .vocab-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: #94a3b8; }
+    .vocab-dl > div { padding: 0.55rem 0; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+    .vocab-dl > div:first-child { border-top: 0; }
+    .slot { border-radius: 0.75rem; padding: 0.75rem; border: 1px solid; }
+
+    /* Knob swatches: one dark tile, one glow, one knob changed at a time. */
+    .knob-tile { width: 56px; height: 56px; border-radius: 14px; background: #0b1220; border: 1px solid rgba(255, 255, 255, 0.14); }
+    .knob-row { display: flex; gap: 1.5rem; align-items: center; justify-content: center; padding: 1.25rem 0 0.5rem; }
+    .knob-label { font-family: ui-monospace, Menlo, monospace; font-size: 10px; color: #94a3b8; text-align: center; margin-top: 0.6rem; }
+    @keyframes knob-breathe { 0%, 100% { box-shadow: 0 0 6px 2px rgba(0, 194, 255, 0.25); } 50% { box-shadow: 0 0 18px 6px rgba(0, 194, 255, 0.85); } }
+    @keyframes knob-orbit { to { transform: rotate(360deg); } }
+    @keyframes knob-sweep { 0%, 100% { left: 6%; } 50% { left: 64%; } }
+    @keyframes knob-shimmer { 0% { left: -40%; } 100% { left: 110%; } }
+    .motion-orbit { position: relative; overflow: hidden; }
+    .motion-orbit::before { content: ""; position: absolute; inset: -40%; background: conic-gradient(from 0deg, transparent 0 75%, #00C2FF 88%, transparent 100%); animation: knob-orbit 3s linear infinite; }
+    .motion-orbit::after { content: ""; position: absolute; inset: 2px; border-radius: 12px; background: #0b1220; }
+    .motion-sweep, .motion-shimmer { position: relative; overflow: hidden; }
+    .motion-sweep::after { content: ""; position: absolute; bottom: 0; width: 30%; height: 2px; background: #00C2FF; box-shadow: 0 0 8px #00C2FF; animation: knob-sweep 3s ease-in-out infinite; }
+    .motion-shimmer::after { content: ""; position: absolute; top: 0; bottom: 0; width: 35%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.28), transparent); animation: knob-shimmer 2.4s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .knob-anim, .motion-orbit::before, .motion-sweep::after, .motion-shimmer::after { animation: none !important; }
+    }
+
+    /* Scrollbar */
+    .custom-scroll::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+  </style>
+  <!-- Dynamic Stylesheet for the Authentic Optical Engine -->
+  <style id="beam-engine-styles"></style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 md:p-12 font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+  <div class="max-w-7xl mx-auto space-y-12">
+
+    <!-- TOP HEADER -->
+    <header class="border-b border-white/10 pb-8 space-y-5">
+      <div class="space-y-3">
+        <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 text-xs font-mono">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>COMMAND-WIDE • EVERY PROJECT</span>
+          <span>•</span>
+          <span>/smh-designer</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+          UI Design Vocabulary &amp; Effects Catalog
+        </h1>
+        <p class="text-slate-300 text-sm max-w-3xl leading-relaxed">
+          The words to describe any screen, any layer and any change, so a design request means one thing to
+          you, to Claude and to the code. Start with <a href="#say-it" class="text-cyan-300 underline">the one-sentence formula</a>,
+          then use the rest as a dictionary. The catalog of effects we have built, with interactive controls, code
+          recipes, and reasoning indicators, is below.
+        </p>
+        <p class="text-slate-400 text-xs max-w-3xl leading-relaxed">
+          This page is yours. The agents, <code class="vocab-code">/smh-designer</code> included, read the same words from
+          <a href="../_scc_sops_prds/frontend_UI_design_guide.md" class="text-cyan-300 underline">the design guide, section 0</a>.
+          The two change together, so the words you use here are the words they answer in.
+        </p>
+      </div>
+      <nav class="flex flex-wrap gap-2 text-xs font-mono" aria-label="Sections">
+        <a href="#say-it" class="px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-500/40 text-cyan-200">1 · Say it in one sentence</a>
+        <a href="#anatomy" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white">2 · Anatomy of a glow</a>
+        <a href="#knobs" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white">3 · The six knobs</a>
+        <a href="#mixups" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white">4 · Words that get mixed up</a>
+        <a href="#sizes" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white">5 · Screen sizes</a>
+        <a href="#glossary" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white">6 · The dictionary</a>
+        <a href="#catalog" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white">7 · Effects catalog</a>
+        <a href="#thinking" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white">7b · Thinking spinners</a>
+      </nav>
+    </header>
+    <!-- END TOP HEADER -->
+
+    <!-- ══════════ 1 · SAY IT IN ONE SENTENCE ══════════ -->
+    <section id="say-it" class="space-y-6 scroll-mt-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">1</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Say it in one sentence</h2>
+      </div>
+      <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">
+        Every design change fits one sentence with five slots. Fill all five and the request can only mean one thing.
+        Leave one out and whoever builds it has to guess, and a guess is how a two-minute change turns into three rounds.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
+        <div class="slot border-cyan-500/40 bg-cyan-500/5">
+          <div class="font-mono text-[11px] text-cyan-300 font-bold">1 · WHERE</div>
+          <div class="text-white font-semibold mt-1">Device, theme, state</div>
+          <div class="text-slate-400 text-xs mt-1">"On a phone, in dark mode, while it's thinking"</div>
+        </div>
+        <div class="slot border-blue-500/40 bg-blue-500/5">
+          <div class="font-mono text-[11px] text-blue-300 font-bold">2 · WHAT</div>
+          <div class="text-white font-semibold mt-1">Screen, then component</div>
+          <div class="text-slate-400 text-xs mt-1">"on the dashboard, the chat window"</div>
+        </div>
+        <div class="slot border-violet-500/40 bg-violet-500/5">
+          <div class="font-mono text-[11px] text-violet-300 font-bold">3 · WHICH LAYER</div>
+          <div class="text-white font-semibold mt-1">The one part you mean</div>
+          <div class="text-slate-400 text-xs mt-1">"the edge ring", "the out glow" (see 2)</div>
+        </div>
+        <div class="slot border-fuchsia-500/40 bg-fuchsia-500/5">
+          <div class="font-mono text-[11px] text-fuchsia-300 font-bold">4 · WHICH KNOB</div>
+          <div class="text-white font-semibold mt-1">What about it changes</div>
+          <div class="text-slate-400 text-xs mt-1">strength, reach, softness, speed, color, motion (see 3)</div>
+        </div>
+        <div class="slot border-amber-500/40 bg-amber-500/5">
+          <div class="font-mono text-[11px] text-amber-300 font-bold">5 · HOW MUCH</div>
+          <div class="text-white font-semibold mt-1">Direction and amount</div>
+          <div class="text-slate-400 text-xs mt-1">"to half of today" or "to 50%", never just "in half"</div>
+        </div>
+      </div>
+
+      <div class="vocab-card space-y-4">
+        <div class="font-mono text-[11px] text-amber-300 font-bold">WORKED EXAMPLE · REAL-WORLD CASE STUDY · AVCH-197</div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
+          <div class="space-y-1">
+            <div class="text-slate-400 text-xs font-mono">WHAT WAS ASKED</div>
+            <p class="text-slate-200 italic">"For the dark mode on mobile we turned down the size-pulse-outside by 30%. It's still too overpowering. Let's cut it in half."</p>
+          </div>
+          <div class="space-y-1">
+            <div class="text-slate-400 text-xs font-mono">WHY IT TOOK THREE ROUNDS</div>
+            <p class="text-slate-300">"Size-pulse-outside" names the whole halo, not a layer: the code's setting is literally <code class="vocab-code">size="pulse-outside"</code>. The halo has three layers, and "cut it in half" could be strength or reach, half of today's 70% or half of full. That's a dozen honest readings, and the first one planned was the wrong one.</p>
+          </div>
+          <div class="space-y-1">
+            <div class="text-slate-400 text-xs font-mono">THE SAME REQUEST, IN THIS VOCABULARY</div>
+            <p class="text-cyan-100">"On a <strong>phone</strong>, in <strong>dark mode</strong>, on the <strong>Chuck, HR and Specialist chat windows</strong>: <strong>edge ring</strong> to 50% strength; <strong>out glow</strong> to 50% strength and 60% reach; <strong>outer bloom</strong> back to 100%."</p>
+            <p class="text-xs text-emerald-300">This is the version that shipped.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        <div class="vocab-card"><span class="vocab-term">Name the layer, not the effect.</span> <span class="text-slate-300">"The halo" is three things. "The out glow" is one.</span></div>
+        <div class="vocab-card"><span class="vocab-term">Name the knob.</span> <span class="text-slate-300">"Dimmer" is strength. "Smaller" is reach. "Softer" is blur. "Calmer" is usually speed.</span></div>
+        <div class="vocab-card"><span class="vocab-term">Anchor every percent.</span> <span class="text-slate-300">Say "half of today" or "to 50% strength". "Cut it in half" is both.</span></div>
+        <div class="vocab-card"><span class="vocab-term">Don't know the name? Describe it and point.</span> <span class="text-slate-300">"The thin line on the edge" or a screenshot with a circle works. Claude maps it to the word here.</span></div>
+      </div>
+    </section>
+
+    <!-- ══════════ 2 · ANATOMY OF A GLOW ══════════ -->
+    <section id="anatomy" class="space-y-6 scroll-mt-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">2</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Anatomy of a glow: the layers you can name</h2>
+      </div>
+      <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">
+        A glowing window is a stack of separate layers, and each one can be changed on its own. The same stack looks
+        different on a phone, because a phone's chat window fills the screen: everything past the window's edge is off
+        the glass, so on a phone you mostly see the edge ring and the part of the out glow that shines in through the window.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Desktop -->
+        <figure class="vocab-card">
+          <svg viewBox="0 0 400 320" class="w-full h-auto" role="img" aria-label="A window floating on a desktop page, with its edge ring, out glow, outer bloom and glass labelled">
+            <defs>
+              <linearGradient id="ag-ocean" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#00C2FF"/><stop offset="0.5" stop-color="#0072FF"/><stop offset="1" stop-color="#6B00FF"/>
+              </linearGradient>
+              <filter id="ag-bloom" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
+              <filter id="ag-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+            </defs>
+            <rect width="400" height="320" rx="12" fill="#0a0f1a"/>
+            <rect x="92" y="62" width="216" height="196" rx="44" fill="url(#ag-ocean)" opacity="0.35" filter="url(#ag-bloom)"/>
+            <rect x="122" y="92" width="156" height="136" rx="20" fill="none" stroke="url(#ag-ocean)" stroke-width="20" opacity="0.85" filter="url(#ag-glow)"/>
+            <rect x="122" y="92" width="156" height="136" rx="20" fill="#0a0e17" fill-opacity="0.62"/>
+            <rect x="140" y="112" width="80" height="12" rx="6" fill="#1e293b"/>
+            <rect x="170" y="134" width="90" height="12" rx="6" fill="#164e63"/>
+            <rect x="140" y="156" width="100" height="12" rx="6" fill="#1e293b"/>
+            <rect x="140" y="198" width="120" height="16" rx="8" fill="#111827" stroke="#334155"/>
+            <rect x="122" y="92" width="156" height="136" rx="20" fill="none" stroke="url(#ag-ocean)" stroke-width="1.6"/>
+            <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+              <line x1="278" y1="104" x2="322" y2="70" stroke="#67e8f9"/><text x="326" y="68" fill="#67e8f9">Edge ring</text>
+              <line x1="112" y1="160" x2="60" y2="130" stroke="#a5b4fc"/><text x="14" y="124" fill="#a5b4fc">Out glow</text>
+              <line x1="96" y1="246" x2="56" y2="282" stroke="#d8b4fe"/><text x="14" y="298" fill="#d8b4fe">Outer bloom</text>
+              <line x1="200" y1="190" x2="330" y2="250" stroke="#cbd5e1"/><text x="334" y="254" fill="#cbd5e1">Glass</text>
+            </g>
+          </svg>
+          <figcaption class="text-xs text-slate-400 mt-2"><strong class="text-white">Desktop.</strong> The window floats on the page, so all four layers show: the bloom spreads onto the page around it.</figcaption>
+        </figure>
+
+        <!-- Phone -->
+        <figure class="vocab-card">
+          <svg viewBox="0 0 400 320" class="w-full h-auto" role="img" aria-label="The same window filling a phone screen: the bloom and the outer half of the out glow fall off-screen">
+            <defs>
+              <clipPath id="ag-screen"><rect x="136" y="14" width="128" height="292" rx="21"/></clipPath>
+            </defs>
+            <rect width="400" height="320" rx="12" fill="#0a0f1a"/>
+            <rect x="104" y="10" width="192" height="300" rx="40" fill="none" stroke="#c084fc" stroke-opacity="0.45" stroke-dasharray="4 5"/>
+            <rect x="130" y="8" width="140" height="304" rx="26" fill="#05070c" stroke="#475569" stroke-width="2"/>
+            <g clip-path="url(#ag-screen)">
+              <rect x="136" y="14" width="128" height="292" rx="21" fill="none" stroke="url(#ag-ocean)" stroke-width="20" opacity="0.85" filter="url(#ag-glow)"/>
+              <rect x="136" y="14" width="128" height="292" rx="21" fill="#0a0e17" fill-opacity="0.62"/>
+              <rect x="150" y="40" width="70" height="11" rx="5" fill="#1e293b"/>
+              <rect x="176" y="60" width="74" height="11" rx="5" fill="#164e63"/>
+              <rect x="150" y="80" width="84" height="11" rx="5" fill="#1e293b"/>
+              <rect x="148" y="270" width="104" height="18" rx="9" fill="#111827" stroke="#334155"/>
+              <rect x="136" y="14" width="128" height="292" rx="21" fill="none" stroke="url(#ag-ocean)" stroke-width="1.6"/>
+            </g>
+            <g stroke="#fbbf24" stroke-width="1.4">
+              <line x1="138" y1="170" x2="152" y2="170"/><polyline points="148,166 152,170 148,174" fill="none"/>
+            </g>
+            <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+              <line x1="264" y1="40" x2="290" y2="30" stroke="#67e8f9"/><text x="294" y="28" fill="#67e8f9">Edge ring</text>
+              <text x="294" y="41" fill="#64748b" font-size="9">on the screen edge</text>
+              <line x1="146" y1="130" x2="92" y2="110" stroke="#a5b4fc"/><text x="8" y="100" fill="#a5b4fc">Out glow</text>
+              <text x="8" y="113" fill="#64748b" font-size="9">only the inner half</text>
+              <line x1="152" y1="170" x2="92" y2="190" stroke="#fbbf24"/><text x="8" y="194" fill="#fbbf24">Reach</text>
+              <text x="8" y="207" fill="#64748b" font-size="9">how far it comes in</text>
+              <line x1="106" y1="270" x2="80" y2="282" stroke="#d8b4fe"/><text x="8" y="286" fill="#d8b4fe">Outer bloom</text>
+              <text x="8" y="299" fill="#64748b" font-size="9">off-screen, never seen</text>
+            </g>
+          </svg>
+          <figcaption class="text-xs text-slate-400 mt-2"><strong class="text-white">Phone.</strong> The window is the screen. The bloom (dashed) and the outer half of the out glow fall past the glass. What reads as "too much" here is the edge ring and the out glow's reach inward.</figcaption>
+        </figure>
+
+        <!-- Inner glow -->
+        <figure class="vocab-card">
+          <svg viewBox="0 0 400 320" class="w-full h-auto" role="img" aria-label="An inner glow: light pooled inside a card's edge, none of it outside">
+            <defs>
+              <linearGradient id="ag-sunset" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#FF4B4B"/><stop offset="0.5" stop-color="#FF8533"/><stop offset="1" stop-color="#FFC700"/>
+              </linearGradient>
+              <clipPath id="ag-card"><rect x="110" y="90" width="180" height="140" rx="20"/></clipPath>
+            </defs>
+            <rect width="400" height="320" rx="12" fill="#0a0f1a"/>
+            <rect x="110" y="90" width="180" height="140" rx="20" fill="#0b1220"/>
+            <g clip-path="url(#ag-card)">
+              <rect x="110" y="90" width="180" height="140" rx="20" fill="none" stroke="url(#ag-sunset)" stroke-width="26" opacity="0.8" filter="url(#ag-glow)"/>
+            </g>
+            <rect x="110" y="90" width="180" height="140" rx="20" fill="none" stroke="url(#ag-sunset)" stroke-width="1.4"/>
+            <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+              <line x1="124" y1="200" x2="70" y2="250" stroke="#fbbf24"/><text x="14" y="266" fill="#fbbf24">Inner glow</text>
+              <text x="14" y="279" fill="#64748b" font-size="9">inside the edge only</text>
+              <line x1="290" y1="110" x2="330" y2="70" stroke="#fca5a5"/><text x="300" y="62" fill="#fca5a5">Edge ring</text>
+            </g>
+          </svg>
+          <figcaption class="text-xs text-slate-400 mt-2"><strong class="text-white">Inner glow: a different effect.</strong> Light pooled inside the edge, none outside (<code class="vocab-code">size="pulse-inner"</code>). Used for telemetry panels and status cards. Floating chat windows use outward halos instead.</figcaption>
+        </figure>
+      </div>
+
+      <div class="vocab-card overflow-x-auto">
+        <table class="w-full text-left text-xs min-w-[640px]">
+          <thead class="text-slate-400 font-mono uppercase tracking-wider border-b border-white/10">
+            <tr><th class="p-3">Say</th><th class="p-3">What you see</th><th class="p-3">Where it sits</th><th class="p-3">Knobs</th><th class="p-3">Code name (for Claude)</th></tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-slate-300">
+            <tr><td class="p-3 font-bold text-cyan-300">Edge ring</td><td class="p-3">The thin bright line tracing the border</td><td class="p-3">On the border, 1px wide</td><td class="p-3">strength, color, motion</td><td class="p-3 vocab-code"><code>::after</code> · <code>--beam-stroke-opacity</code></td></tr>
+            <tr><td class="p-3 font-bold text-indigo-300">Out glow</td><td class="p-3">The colored glow hugging the border</td><td class="p-3">Behind the glass: reaches ~14px past the edge and shines in through the glass</td><td class="p-3">strength, reach, softness, speed</td><td class="p-3 vocab-code"><code>::before</code>, called "core" · <code>--beam-inner-opacity</code> · <code>--beam-glow-reach</code> · <code>--beam-core-blur</code></td></tr>
+            <tr><td class="p-3 font-bold text-purple-300">Outer bloom</td><td class="p-3">The wide soft haze</td><td class="p-3">~42px past the edge, onto the page</td><td class="p-3">strength, softness</td><td class="p-3 vocab-code"><code>[data-beam-bloom]</code> · <code>--beam-bloom-opacity</code> · <code>--beam-bloom-blur</code></td></tr>
+            <tr><td class="p-3 font-bold text-amber-300">Inner glow</td><td class="p-3">Light pooled just inside the edge</td><td class="p-3">Inside the element only</td><td class="p-3">strength, speed, color</td><td class="p-3 vocab-code"><code>size="pulse-inner"</code> · the <code>::before</code> of the traveling beams (<code>sm</code>, <code>md</code>, <code>line</code>)</td></tr>
+            <tr><td class="p-3 font-bold text-slate-100">Glass</td><td class="p-3">The see-through window surface</td><td class="p-3">The window itself</td><td class="p-3">tint (how dark), frost (how blurred behind)</td><td class="p-3 vocab-code">background alpha · <code>backdrop-filter: blur()</code></td></tr>
+            <tr><td class="p-3 font-bold text-white">Halo</td><td class="p-3">All of the above breathing together</td><td class="p-3">The whole effect</td><td class="p-3">each layer's own knobs</td><td class="p-3 vocab-code"><code>size="pulse-outside"</code></td></tr>
+          </tbody>
+        </table>
+        <p class="text-xs text-amber-200/90 mt-3 leading-relaxed">
+          ⚠ Watch the code names. On the halo, the code calls the out glow "core" and names its strength setting <code class="vocab-code">--beam-inner-opacity</code>.
+          It is <strong>not</strong> an inner glow: it sits behind the glass and shines outward. Say "out glow"; Claude translates.
+        </p>
+      </div>
+    </section>
+
+    <!-- ══════════ 3 · THE SIX KNOBS ══════════ -->
+    <section id="knobs" class="space-y-6 scroll-mt-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">3</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">The six knobs: what about it changes</h2>
+      </div>
+      <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">
+        Any visual effect, in any project, turns on the same six knobs. Each card below changes one knob and holds the other five still.
+        "Bigger" and "brighter" are two different knobs, and so are "calmer" and "dimmer".
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="vocab-card">
+          <div class="flex items-baseline justify-between"><span class="vocab-term">Strength</span><span class="vocab-code">opacity · alpha</span></div>
+          <p class="text-xs text-slate-400 mt-1">How visible it is, from invisible (0%) to full (100%). It doesn't change size.</p>
+          <div class="knob-row">
+            <div><div class="knob-tile" style="box-shadow:0 0 14px 4px rgba(0,194,255,.2)"></div><div class="knob-label">25%</div></div>
+            <div><div class="knob-tile" style="box-shadow:0 0 14px 4px rgba(0,194,255,.45)"></div><div class="knob-label">50%</div></div>
+            <div><div class="knob-tile" style="box-shadow:0 0 14px 4px rgba(0,194,255,.9)"></div><div class="knob-label">100%</div></div>
+          </div>
+          <p class="text-xs mt-2"><span class="text-slate-500">Say:</span> <span class="vocab-say">"dimmer", "the ring at 50% strength", "half of today"</span></p>
+        </div>
+        <div class="vocab-card">
+          <div class="flex items-baseline justify-between"><span class="vocab-term">Reach</span><span class="vocab-code">size · spread · scale</span></div>
+          <p class="text-xs text-slate-400 mt-1">How far it extends from where it starts: past the edge, or in toward the middle. It doesn't change brightness.</p>
+          <div class="knob-row">
+            <div><div class="knob-tile" style="box-shadow:0 0 6px 1px rgba(0,194,255,.7)"></div><div class="knob-label">tight</div></div>
+            <div><div class="knob-tile" style="box-shadow:0 0 14px 5px rgba(0,194,255,.7)"></div><div class="knob-label">medium</div></div>
+            <div><div class="knob-tile" style="box-shadow:0 0 26px 12px rgba(0,194,255,.7)"></div><div class="knob-label">wide</div></div>
+          </div>
+          <p class="text-xs mt-2"><span class="text-slate-500">Say:</span> <span class="vocab-say">"pull it in", "smaller", "reach 60%"</span></p>
+        </div>
+        <div class="vocab-card">
+          <div class="flex items-baseline justify-between"><span class="vocab-term">Softness</span><span class="vocab-code">blur</span></div>
+          <p class="text-xs text-slate-400 mt-1">How fuzzy its edge is. Crisp reads as a line, soft reads as light.</p>
+          <div class="knob-row">
+            <div><div class="knob-tile" style="box-shadow:0 0 0 3px rgba(0,194,255,.8)"></div><div class="knob-label">crisp</div></div>
+            <div><div class="knob-tile" style="box-shadow:0 0 8px 3px rgba(0,194,255,.8)"></div><div class="knob-label">soft</div></div>
+            <div><div class="knob-tile" style="box-shadow:0 0 24px 3px rgba(0,194,255,.8)"></div><div class="knob-label">very soft</div></div>
+          </div>
+          <p class="text-xs mt-2"><span class="text-slate-500">Say:</span> <span class="vocab-say">"softer edge", "crisper", "less fuzzy"</span></p>
+        </div>
+        <div class="vocab-card">
+          <div class="flex items-baseline justify-between"><span class="vocab-term">Speed</span><span class="vocab-code">duration · seconds per cycle</span></div>
+          <p class="text-xs text-slate-400 mt-1">How long one cycle takes. A bigger number is slower, and slower reads calmer.</p>
+          <div class="knob-row">
+            <div><div class="knob-tile knob-anim" style="animation:knob-breathe 1.8s ease-in-out infinite"></div><div class="knob-label">1.8s</div></div>
+            <div><div class="knob-tile knob-anim" style="animation:knob-breathe 3.1s ease-in-out infinite"></div><div class="knob-label">3.1s</div></div>
+            <div><div class="knob-tile knob-anim" style="animation:knob-breathe 6s ease-in-out infinite"></div><div class="knob-label">6s</div></div>
+          </div>
+          <p class="text-xs mt-2"><span class="text-slate-500">Say:</span> <span class="vocab-say">"slower", "calmer", "a 6-second breathe"</span></p>
+        </div>
+        <div class="vocab-card">
+          <div class="flex items-baseline justify-between"><span class="vocab-term">Color</span><span class="vocab-code">palette · hue · saturation</span></div>
+          <p class="text-xs text-slate-400 mt-1"><strong class="text-slate-300">Hue</strong> is which color. <strong class="text-slate-300">Saturation</strong> is how vivid. <strong class="text-slate-300">Brightness</strong> is how light. A <strong class="text-slate-300">palette</strong> is the approved set.</p>
+          <div class="knob-row">
+            <div><div class="knob-tile" style="background:linear-gradient(135deg,#00C2FF,#0072FF,#6B00FF)"></div><div class="knob-label">Ocean</div></div>
+            <div><div class="knob-tile" style="background:linear-gradient(135deg,#FF4B4B,#FF8533,#FFC700)"></div><div class="knob-label">Sunset</div></div>
+            <div><div class="knob-tile" style="background:linear-gradient(135deg,#00C2FF,#0072FF,#6B00FF);filter:saturate(.3)"></div><div class="knob-label">less vivid</div></div>
+          </div>
+          <p class="text-xs mt-2"><span class="text-slate-500">Say:</span> <span class="vocab-say">"use Sunset", "less vivid", "more blue, less purple"</span></p>
+        </div>
+        <div class="vocab-card">
+          <div class="flex items-baseline justify-between"><span class="vocab-term">Motion</span><span class="vocab-code">the kind of movement</span></div>
+          <p class="text-xs text-slate-400 mt-1">What it does over time. Name the motion by what it looks like.</p>
+          <div class="knob-row" style="gap:1rem">
+            <div><div class="knob-tile knob-anim" style="animation:knob-breathe 3s ease-in-out infinite"></div><div class="knob-label">breathe</div></div>
+            <div><div class="knob-tile motion-orbit"></div><div class="knob-label">orbit</div></div>
+            <div><div class="knob-tile motion-sweep"></div><div class="knob-label">sweep</div></div>
+            <div><div class="knob-tile motion-shimmer"></div><div class="knob-label">shimmer</div></div>
+          </div>
+          <p class="text-xs mt-2"><span class="text-slate-500">Say:</span> <span class="vocab-say">"breathe instead of orbit", "no motion, just a steady glow"</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 4 · WORDS THAT GET MIXED UP ══════════ -->
+    <section id="mixups" class="space-y-6 scroll-mt-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">4</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Words that get mixed up</h2>
+      </div>
+      <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">Each pair below sounds like one thing and is two. These are the ones that cost rounds.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        <div class="vocab-card"><div class="vocab-term">Out glow <span class="text-slate-500 font-normal">vs</span> inner glow</div><p class="text-slate-300 text-xs mt-1">An out glow sits behind the element and shines out past its edge. An inner glow stays inside the edge. On the halo, the code's "core" and "inner-opacity" names mean the <em>out</em> glow; on the traveling beams the same slot really is an inner glow.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Strength <span class="text-slate-500 font-normal">vs</span> reach</div><p class="text-slate-300 text-xs mt-1">"Turn it down" can mean dimmer (strength) or smaller (reach). Say which. You usually want both a little rather than one a lot.</p></div>
+        <div class="vocab-card"><div class="vocab-term"><code class="vocab-code">size="…"</code> <span class="text-slate-500 font-normal">vs</span> size</div><p class="text-slate-300 text-xs mt-1">In the Border Beam code, <code class="vocab-code">size</code> is the effect's <em>name</em> (<code class="vocab-code">pulse-outside</code>, <code class="vocab-code">line</code>, <code class="vocab-code">sm</code>). How big it is lives under reach.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Percent of today <span class="text-slate-500 font-normal">vs</span> percent strength</div><p class="text-slate-300 text-xs mt-1">At 70% today, "half" is 35% or 50%. Say "half of today" or "to 50%".</p></div>
+        <div class="vocab-card"><div class="vocab-term">Padding <span class="text-slate-500 font-normal">vs</span> margin <span class="text-slate-500 font-normal">vs</span> gap</div><p class="text-slate-300 text-xs mt-1">Padding is space <em>inside</em> a box, between its edge and its content. Margin is space <em>outside</em> it, pushing neighbors away. Gap is the space <em>between</em> items in a row or grid.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Border <span class="text-slate-500 font-normal">vs</span> outline <span class="text-slate-500 font-normal">vs</span> focus ring</div><p class="text-slate-300 text-xs mt-1">A border is part of the box and takes up space. An outline is drawn outside it and takes up none. A focus ring is the outline that shows where the keyboard is.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Shadow <span class="text-slate-500 font-normal">vs</span> glow</div><p class="text-slate-300 text-xs mt-1">A shadow is dark and falls below or behind, so the thing looks raised. A glow is light and spreads all around, so the thing looks lit.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Blur <span class="text-slate-500 font-normal">vs</span> frost (backdrop blur)</div><p class="text-slate-300 text-xs mt-1">Blur softens the thing itself. Frost softens what is <em>behind</em> a see-through layer, the glass effect.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Opacity <span class="text-slate-500 font-normal">vs</span> brightness</div><p class="text-slate-300 text-xs mt-1">Lower opacity makes it see-through. Lower brightness makes it darker but still solid.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Modal <span class="text-slate-500 font-normal">vs</span> drawer <span class="text-slate-500 font-normal">vs</span> sheet <span class="text-slate-500 font-normal">vs</span> popover</div><p class="text-slate-300 text-xs mt-1">A modal sits over the middle and blocks everything. A drawer slides in from a side. A sheet rises from the bottom on a phone. A popover floats beside the thing that opened it and blocks nothing.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Toast <span class="text-slate-500 font-normal">vs</span> banner <span class="text-slate-500 font-normal">vs</span> tooltip</div><p class="text-slate-300 text-xs mt-1">A toast pops in and leaves on its own. A banner is a strip that stays until closed. A tooltip is a tiny label that shows on hover or long-press.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Hover <span class="text-slate-500 font-normal">vs</span> focus <span class="text-slate-500 font-normal">vs</span> pressed</div><p class="text-slate-300 text-xs mt-1">Hover is the mouse over it, and phones don't have one. Focus is where the keyboard or text cursor is. Pressed is the moment of the tap or click.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Transition <span class="text-slate-500 font-normal">vs</span> animation</div><p class="text-slate-300 text-xs mt-1">A transition plays once, when something changes, like fading in when opened. An animation plays on its own, often on a loop, like breathing.</p></div>
+        <div class="vocab-card"><div class="vocab-term">Viewport <span class="text-slate-500 font-normal">vs</span> window</div><p class="text-slate-300 text-xs mt-1">The viewport is the visible area of the browser, the whole screen on a phone. A window, in our apps, is a panel inside the page, like the Chuck chat window.</p></div>
+      </div>
+    </section>
+
+    <!-- ══════════ 5 · SCREEN SIZES ══════════ -->
+    <section id="sizes" class="space-y-6 scroll-mt-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">5</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Screen sizes: where the layout changes</h2>
+      </div>
+      <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">
+        A <strong class="text-white">breakpoint</strong> is a screen width where the layout changes. We build <strong class="text-white">mobile first</strong>:
+        the phone is the base design, and each wider size adds to it. Widths are in CSS pixels. A 375px phone is an iPhone-sized screen, whatever its hardware pixels.
+      </p>
+      <div class="vocab-card">
+        <div class="flex text-[11px] font-mono rounded-lg overflow-hidden border border-white/10">
+          <div class="flex-[3] p-2 bg-cyan-500/25 text-cyan-100"><div class="font-bold">Phone</div><div>0–639</div><div class="text-cyan-300/80">base</div></div>
+          <div class="flex-[1] p-2 bg-blue-500/20 text-blue-100 border-l border-white/10"><div class="font-bold">sm</div><div>640+</div></div>
+          <div class="flex-[2] p-2 bg-indigo-500/20 text-indigo-100 border-l border-white/10"><div class="font-bold">Tablet · md</div><div>768+</div></div>
+          <div class="flex-[2] p-2 bg-violet-500/20 text-violet-100 border-l border-white/10"><div class="font-bold">Desktop · lg</div><div>1024+</div></div>
+          <div class="flex-[2] p-2 bg-purple-500/20 text-purple-100 border-l border-white/10"><div class="font-bold">xl</div><div>1280+</div></div>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">These are Tailwind's defaults, which every house project uses. <span class="vocab-say">Say: "on a phone" (under 640), "on a tablet" (768 and up), "on desktop" (1024 and up).</span> Test phones: 375 wide (iPhone SE to mini) and 430 wide (Pro Max).</p>
+      </div>
+    </section>
+
+    <!-- ══════════ 6 · THE DICTIONARY ══════════ -->
+    <section id="glossary" class="space-y-6 scroll-mt-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">6</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">The dictionary: every UI word, grouped</h2>
+      </div>
+      <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">Plain meanings for the words designers and code use, in every project. The gray tag after a term is what it's called in code.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 text-xs">
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-cyan-300 mb-2">Screen &amp; layout</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Viewport</span>: the visible part of the browser. On a phone, the whole screen.</div>
+            <div><span class="vocab-term">Breakpoint</span>: a width where the layout changes (see 5).</div>
+            <div><span class="vocab-term">Mobile first</span>: design the phone first; wider screens add to it.</div>
+            <div><span class="vocab-term">Full-bleed</span>: runs edge to edge with no side space.</div>
+            <div><span class="vocab-term">Container</span> <span class="vocab-code">max-width</span>: the invisible column that stops content stretching too wide on big screens.</div>
+            <div><span class="vocab-term">Gutter</span>: the side space between content and the screen edge. House phones: 16px.</div>
+            <div><span class="vocab-term">Padding · margin · gap</span>: space inside, outside, and between (see 4).</div>
+            <div><span class="vocab-term">Stack · row · grid</span>: items piled top to bottom, side by side, or in cells.</div>
+            <div><span class="vocab-term">Alignment</span>: where items sit in their space: start, center, end, or stretched.</div>
+            <div><span class="vocab-term">Safe area</span>: the part of a phone screen clear of the notch and the home bar.</div>
+            <div><span class="vocab-term">Above the fold</span>: visible without scrolling.</div>
+            <div><span class="vocab-term">Sticky · fixed</span>: stays put while you scroll. Sticky holds only within its section; fixed holds always.</div>
+          </div>
+        </div>
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-blue-300 mb-2">Surfaces: the boxes things live in</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Screen · page</span>: one full view you navigate to.</div>
+            <div><span class="vocab-term">Section</span>: a band of the page with one job.</div>
+            <div><span class="vocab-term">Card</span>: a bordered box holding one thing.</div>
+            <div><span class="vocab-term">Panel</span>: a larger region, often a side column.</div>
+            <div><span class="vocab-term">Window</span> <span class="text-slate-500">(in-app)</span>: a card that works like a mini app, such as a chat window.</div>
+            <div><span class="vocab-term">Modal · dialog</span>: a box over the page that blocks the rest until it closes.</div>
+            <div><span class="vocab-term">Drawer</span>: slides in from an edge and stays attached to it.</div>
+            <div><span class="vocab-term">Sheet</span>: a drawer that rises from the bottom, on phones.</div>
+            <div><span class="vocab-term">Popover</span>: a small floating box beside what opened it.</div>
+            <div><span class="vocab-term">Tooltip · toast · banner</span>: hover label, pop-in message, stay-put strip (see 4).</div>
+            <div><span class="vocab-term">Chip · pill</span>: a small rounded tag or option.</div>
+            <div><span class="vocab-term">Badge</span>: a tiny marker on something else, like a count or a status dot.</div>
+            <div><span class="vocab-term">Tabs · accordion</span>: switch views in one place / sections that open and close.</div>
+          </div>
+        </div>
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-violet-300 mb-2">Edges &amp; shape</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Border</span> <span class="vocab-code">stroke</span>: the line around an element.</div>
+            <div><span class="vocab-term">Hairline</span>: a 1px border, the thinnest there is.</div>
+            <div><span class="vocab-term">Divider</span>: a line separating sections.</div>
+            <div><span class="vocab-term">Corner radius</span> <span class="vocab-code">rounded</span>: how round the corners are. 0 is square; full is a pill.</div>
+            <div><span class="vocab-term">Outline · focus ring</span>: lines drawn outside the border (see 4).</div>
+            <div><span class="vocab-term">Edge ring</span>: a glowing line on the border (see 2).</div>
+          </div>
+          <h3 class="text-sm font-bold text-violet-300 mt-4 mb-2">Depth &amp; layers</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Layer</span>: anything stacked on top of something else.</div>
+            <div><span class="vocab-term">Stacking order</span> <span class="vocab-code">z-index</span>: which layer is on top.</div>
+            <div><span class="vocab-term">Elevation</span>: how raised it looks. Higher means a bigger, softer shadow.</div>
+            <div><span class="vocab-term">Drop shadow · inner shadow</span> <span class="vocab-code">inset</span>: shadow cast outside it, so it looks raised / shadow inside the edge, so it looks pressed in.</div>
+            <div><span class="vocab-term">Overlay · scrim</span>: the dimming layer over the page behind a modal.</div>
+            <div><span class="vocab-term">Backdrop</span>: whatever sits behind a see-through layer.</div>
+            <div><span class="vocab-term">Glass</span>: a see-through surface. <strong>Tint</strong> is how dark or colored it is; <strong>frost</strong> is how much it blurs what's behind.</div>
+          </div>
+        </div>
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-fuchsia-300 mb-2">Color &amp; light</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Token</span>: a named color or value used everywhere. Change it once and it changes everywhere.</div>
+            <div><span class="vocab-term">Palette</span>: the approved set of colors (Ocean, Sunset).</div>
+            <div><span class="vocab-term">Primary · accent</span>: the main brand color / the highlight color for actions.</div>
+            <div><span class="vocab-term">Opacity</span> <span class="vocab-code">alpha</span>: how solid. 0% is invisible, 100% is solid.</div>
+            <div><span class="vocab-term">Hue · saturation · brightness</span>: which color, how vivid, how light.</div>
+            <div><span class="vocab-term">Gradient</span>: a smooth blend between colors. Linear runs in a line; radial runs out from a center.</div>
+            <div><span class="vocab-term">Contrast</span>: how far text stands out from what's behind it. Body text needs 4.5 to 1; large text needs 3 to 1.</div>
+            <div><span class="vocab-term">Glow · shadow</span>: light spreading out / dark falling behind (see 4).</div>
+          </div>
+        </div>
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-rose-300 mb-2">Type</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Typeface · font</span>: the letter design.</div>
+            <div><span class="vocab-term">Size scale</span>: the fixed set of text sizes. Pick from it; don't invent one.</div>
+            <div><span class="vocab-term">Weight</span>: how thick, from regular to medium to bold.</div>
+            <div><span class="vocab-term">Line height</span> <span class="vocab-code">leading</span>: space between lines.</div>
+            <div><span class="vocab-term">Letter spacing</span> <span class="vocab-code">tracking</span>: space between letters.</div>
+            <div><span class="vocab-term">Hierarchy</span>: heading, subheading, body, caption, from loudest to quietest.</div>
+            <div><span class="vocab-term">Truncation</span>: cutting long text off with "…".</div>
+            <div><span class="vocab-term">Monospace</span>: every letter the same width, for code and labels.</div>
+          </div>
+        </div>
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-amber-300 mb-2">Motion</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Transition · animation</span>: plays once on a change / plays on its own (see 4).</div>
+            <div><span class="vocab-term">Duration</span>: how long one run or cycle takes.</div>
+            <div><span class="vocab-term">Easing</span>: how it speeds up and slows down. Ease-out starts fast and lands gently, the default for things appearing.</div>
+            <div><span class="vocab-term">Spring</span>: overshoots a touch and settles, like a real object.</div>
+            <div><span class="vocab-term">Delay · stagger</span>: wait before starting / start items one after another.</div>
+            <div><span class="vocab-term">Fade · slide · scale</span>: appear by opacity, by moving in, by growing.</div>
+            <div><span class="vocab-term">Breathe · orbit · sweep · shimmer</span>: swell and fade / travel around the edge / glide back and forth / a glint passing across.</div>
+            <div><span class="vocab-term">Drift</span>: a slow color shift over time.</div>
+            <div><span class="vocab-term">Reduced motion</span>: the phone setting that asks apps to calm or stop motion. We honor it.</div>
+          </div>
+        </div>
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-emerald-300 mb-2">States</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Default</span> <span class="vocab-code">rest</span>: nothing happening.</div>
+            <div><span class="vocab-term">Hover · focus · pressed</span>: mouse over / keyboard or cursor on / being tapped (see 4).</div>
+            <div><span class="vocab-term">Selected</span>: chosen, and stays chosen.</div>
+            <div><span class="vocab-term">Disabled</span>: visible but can't be used.</div>
+            <div><span class="vocab-term">Loading · empty · error · success</span>: working / nothing to show yet / something failed / it worked.</div>
+          </div>
+          <h3 class="text-sm font-bold text-emerald-300 mt-4 mb-2">Waiting &amp; feedback</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Spinner</span>: a looping sign that something is working.</div>
+            <div><span class="vocab-term">Skeleton</span>: gray placeholder shapes where content will land.</div>
+            <div><span class="vocab-term">Progress bar</span>: how far along something is.</div>
+            <div><span class="vocab-term">Thinking indicator</span>: the animated icon, a thinking spinner, while an AI reasons. All nine live in <a href="#thinking" class="text-cyan-300 underline">7b</a>, named by shape: Rubik's cube, orbits, globe, wave, constellation, braid, ribbon, ring, morph.</div>
+            <div><span class="vocab-term">Typing indicator · streaming</span>: the dots while someone types / text appearing as it's written.</div>
+          </div>
+        </div>
+
+        <div class="vocab-card">
+          <h3 class="text-sm font-bold text-sky-300 mb-2">Theme</h3>
+          <div class="vocab-dl text-slate-300">
+            <div><span class="vocab-term">Dark mode · light mode</span>: light text on dark / dark text on light.</div>
+            <div><span class="vocab-term">System</span>: follows the phone's own setting, and flips when the phone does.</div>
+            <div><span class="vocab-term">Daylight</span> <span class="text-slate-500">(project-specific)</span>: custom name for a light theme variant.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- PILLAR 2: THE BORDER BEAM EFFECT PRESETS -->
+    <section id="catalog" class="space-y-6 scroll-mt-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">7</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Effects catalog: the Border Beam presets we have built</h2>
+      </div>
+      <p class="text-sm text-slate-300 max-w-3xl leading-relaxed">
+        Live demos of each preset. The code name on each card (<code class="vocab-code">size="…"</code>) is what to quote when you want
+        one reused. The controls change every demo at once: palette is the color set, speed is seconds per cycle, and strength is how visible.
+      </p>
+      <!-- Live Interactive Control Panel -->
+      <div class="flex flex-wrap items-center gap-3 bg-[#0f1420] border border-white/10 p-3 rounded-2xl shadow-2xl">
+        <!-- Palette Switcher -->
+        <div class="space-y-1">
+          <label class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Palette</label>
+          <div class="inline-flex p-0.5 rounded-lg bg-black/60 border border-white/10 text-xs">
+            <button id="btn-palette-ocean" class="px-2.5 py-1 rounded-md font-medium text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 transition-all">
+              Ocean
+            </button>
+            <button id="btn-palette-sunset" class="px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white transition-all">
+              Sunset
+            </button>
+          </div>
+        </div>
+
+        <!-- Speed Selector -->
+        <div class="space-y-1">
+          <label class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Speed</label>
+          <select id="select-speed" class="bg-black/60 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-slate-200 outline-none focus:border-cyan-500">
+            <option value="6.0" selected>Slow (6.0s)</option>
+            <option value="3.1">Normal (3.1s)</option>
+            <option value="1.8">Fast (1.8s)</option>
+          </select>
+        </div>
+
+        <!-- Strength Slider -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+            <span>STRENGTH</span>
+            <span id="strength-label" class="text-cyan-400 font-bold">90%</span>
+          </div>
+          <input id="range-strength" type="range" min="30" max="100" step="5" value="90" class="w-20 accent-cyan-400 cursor-pointer">
+        </div>
+
+        <!-- Live Local Dev Server Link -->
+        <div class="pl-2 border-l border-white/10">
+          <a href="http://localhost:3000/beam-preview" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold hover:bg-cyan-500/20 hover:border-cyan-400 transition-all">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span>Live Server :3000 ↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+        <!-- Preset 1: Bottom Rim Shimmer — Sweep & Full Loop (Operator Favorite) -->
+        <div class="bg-[#0f1420] border border-cyan-500/30 rounded-2xl p-6 space-y-4 flex flex-col justify-between relative shadow-lg">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 font-bold border border-cyan-800/50">size="line" (2 Travel Modes)</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">★ Operator Favorite</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Shimmer: Sweep &amp; Full Loop</h3>
+            <p class="text-xs text-slate-400">
+              Two shimmer travel modes using the multi-point radial gradient cluster: <strong>Option A (Sweep)</strong> glides the shimmer glow back &amp; forth along a single horizontal border edge; <strong>Option B (Full Loop)</strong> travels the same shimmer 360° continuously around the entire perimeter.
+            </p>
+          </div>
+
+          <!-- Code Usage Syntax -->
+          <div class="bg-black/60 border border-white/10 rounded-xl p-3 font-mono text-[11px] space-y-2">
+            <div class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">How to Call in Code:</div>
+            <div class="space-y-1.5 text-slate-300">
+              <div>
+                <div class="text-slate-400 text-[10px]">// Option A: Single-edge horizontal sweep (inputs, search bars, docked headers)</div>
+                <div class="text-cyan-200">&lt;<span class="text-purple-300">BorderBeam</span> <span class="text-amber-300">size</span>=<span class="text-emerald-300">"line"</span> <span class="text-amber-300">travel</span>=<span class="text-emerald-300">"sweep"</span> <span class="text-amber-300">colorVariant</span>=<span class="text-emerald-300">"ocean"</span> <span class="text-amber-300">duration</span>={<span class="text-blue-300">6.0</span>} <span class="text-amber-300">strength</span>={<span class="text-blue-300">0.9</span>} /&gt;</div>
+              </div>
+              <div class="pt-1.5 border-t border-white/5">
+                <div class="text-slate-400 text-[10px]">// Option B: Full 360° perimeter loop (focal cards, containers, modal frames)</div>
+                <div class="text-cyan-200">&lt;<span class="text-purple-300">BorderBeam</span> <span class="text-amber-300">size</span>=<span class="text-emerald-300">"line"</span> <span class="text-amber-300">travel</span>=<span class="text-emerald-300">"loop"</span> <span class="text-amber-300">colorVariant</span>=<span class="text-emerald-300">"ocean"</span> <span class="text-amber-300">duration</span>={<span class="text-blue-300">6.0</span>} <span class="text-amber-300">strength</span>={<span class="text-blue-300">0.9</span>} /&gt;</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Mock Demo -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-5 space-y-4 shadow-inner">
+            <!-- Option A: Sweep (back & forth along bottom edge) -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs text-slate-300 font-mono">
+                <span>Option A: Bottom Rim Sweep</span>
+                <span class="text-[10px] text-cyan-400 font-mono font-bold">travel="sweep"</span>
+              </div>
+              <div class="relative w-full rounded-xl bg-black/80 border border-white/10 overflow-hidden beam-engine-shimmer-sweep" data-beam-instance="shimmer-sweep-input">
+                <div class="relative z-10 p-3 flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <svg class="w-4 h-4 text-cyan-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span class="text-xs text-slate-400">Ask any system question, workflow command, or project query...</span>
+                  </div>
+                  <span class="text-xs font-semibold text-cyan-400 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 shrink-0">Send</span>
+                </div>
+                <div class="beam-bloom-shimmer-sweep" data-beam-bloom=""></div>
+              </div>
+            </div>
+
+            <!-- Option B: Full Loop (360° around perimeter) -->
+            <div class="space-y-1.5 pt-1">
+              <div class="flex items-center justify-between text-xs text-slate-300 font-mono">
+                <span>Option B: Full 360° Loop</span>
+                <span class="text-[10px] text-cyan-400 font-mono font-bold">travel="loop"</span>
+              </div>
+              <div class="relative w-full rounded-2xl bg-black/70 border border-white/10 overflow-hidden beam-engine-shimmer-loop" data-beam-instance="shimmer-loop-card">
+                <div class="relative z-10 p-4 space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-white">360° Shimmer Loop</span>
+                    <span class="text-[10px] font-mono text-cyan-400">Perimeter Active</span>
+                  </div>
+                  <p class="text-[11px] text-slate-300">
+                    Same multi-point shimmer glow cluster traveling continuously around all four edges and rounded corners.
+                  </p>
+                </div>
+                <div class="beam-bloom-shimmer-loop" data-beam-bloom=""></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Chat input bars, drawer top rims, focus cards, interactive containers, modal frames.</div>
+            <div><strong class="text-slate-300">Palettes:</strong> Ocean (Brand Cyan/Blue), Sunset (Coral/Amber).</div>
+          </div>
+        </div>
+
+
+        <!-- Preset 2: Perimeter Orbit Beam — Chat Windows & Circular Controls (Operator Favorite) -->
+        <div class="bg-[#0f1420] border border-cyan-500/30 rounded-2xl p-6 space-y-4 flex flex-col justify-between relative shadow-lg">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 font-bold border border-cyan-800/50">size="md" / travel="orbit" &amp; size="circle"</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">★ Operator Favorite</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Perimeter Orbit Beam</h3>
+            <p class="text-xs text-slate-400">
+              A continuous 1px hairline laser beam that travels around the outer perimeter of a container. It adapts seamlessly to any geometry: traveling smoothly along the four straight edges and rounded corners of a <strong>Chat Window</strong>, or 360° around <strong>circular avatars and buttons</strong>.
+            </p>
+          </div>
+
+          <!-- Code Usage Syntax -->
+          <div class="bg-black/60 border border-white/10 rounded-xl p-3 font-mono text-[11px] space-y-2">
+            <div class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider">How to Call in Code:</div>
+            <div class="space-y-1.5 text-slate-300">
+              <div>
+                <div class="text-slate-400 text-[10px]">// On a Chat Window or card container (adapts to rounded-2xl / rounded-xl)</div>
+                <div class="text-cyan-200">&lt;<span class="text-purple-300">BorderBeam</span> <span class="text-amber-300">size</span>=<span class="text-emerald-300">"md"</span> <span class="text-amber-300">travel</span>=<span class="text-emerald-300">"orbit"</span> <span class="text-amber-300">colorVariant</span>=<span class="text-emerald-300">"ocean"</span> <span class="text-amber-300">duration</span>={<span class="text-blue-300">6.0</span>}&gt;</div>
+                <div class="pl-2.5 text-slate-300">&lt;<span class="text-purple-300">ChatWindow</span>&gt;...&lt;/<span class="text-purple-300">ChatWindow</span>&gt;</div>
+                <div class="text-cyan-200">&lt;/<span class="text-purple-300">BorderBeam</span>&gt;</div>
+              </div>
+              <div class="pt-1.5 border-t border-white/5">
+                <div class="text-slate-400 text-[10px]">// On circular avatars or round action buttons (forces rounded-full)</div>
+                <div class="text-cyan-200">&lt;<span class="text-purple-300">BorderBeam</span> <span class="text-amber-300">size</span>=<span class="text-emerald-300">"circle"</span> <span class="text-amber-300">travel</span>=<span class="text-emerald-300">"orbit"</span> <span class="text-amber-300">colorVariant</span>=<span class="text-emerald-300">"ocean"</span> /&gt;</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Mock Demo -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-5 space-y-4 shadow-inner">
+            <!-- Feature 1: Chat Window Container Orbit -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs text-slate-300 font-mono">
+                <span>Chat Window Orbit Beam</span>
+                <span class="text-[10px] text-cyan-400 font-mono font-bold">size="md" / travel="orbit"</span>
+              </div>
+              <div class="relative w-full rounded-2xl bg-[#0b101d] border border-white/10 overflow-hidden beam-engine-travel-line" data-beam-instance="chat-window-orbit">
+                <div class="relative z-10 p-3.5 space-y-2.5">
+                  <div class="flex items-center justify-between pb-2 border-b border-white/10">
+                    <div class="flex items-center gap-2">
+                      <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                      <span class="text-xs font-bold text-white">Assistant Chat Console</span>
+                    </div>
+                    <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/50">Online</span>
+                  </div>
+                  <div class="bg-black/50 border border-white/5 rounded-xl p-2.5 space-y-1">
+                    <div class="text-[10px] font-mono text-cyan-300">System Agent:</div>
+                    <p class="text-[11px] text-slate-300 leading-snug">"Session active. Border beam tracking perimeter across all 4 edges."</p>
+                  </div>
+                  <div class="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg bg-black/60 border border-white/10 text-xs">
+                    <span class="text-[10px] text-slate-400 truncate">Ask a question or enter workflow...</span>
+                    <span class="text-[10px] font-mono text-cyan-400 shrink-0 font-semibold">Enter ↵</span>
+                  </div>
+                </div>
+                <div class="beam-bloom-travel-line" data-beam-bloom=""></div>
+              </div>
+            </div>
+
+            <!-- Feature 2: Circular Avatar & Round Action Button -->
+            <div class="space-y-1.5 pt-1 border-t border-white/5">
+              <div class="flex items-center justify-between text-xs text-slate-300 font-mono">
+                <span>Circular Avatar &amp; Action Controls</span>
+                <span class="text-[10px] text-cyan-400 font-mono font-bold">size="circle"</span>
+              </div>
+              <div class="flex items-center justify-around p-2 bg-black/40 rounded-xl border border-white/5">
+                <!-- Circular Avatar Ring -->
+                <div class="flex flex-col items-center gap-1.5">
+                  <div class="relative w-12 h-12 rounded-full bg-[#101522] flex items-center justify-center beam-engine-circle" data-beam-instance="circle-avatar">
+                    <div class="relative z-10 w-9 h-9 rounded-full bg-cyan-950/60 border border-cyan-500/40 flex items-center justify-center text-sm">
+                      ⚡
+                    </div>
+                    <div class="beam-bloom-circle" data-beam-bloom=""></div>
+                  </div>
+                  <span class="text-[9px] font-mono text-slate-400">Avatar Ring</span>
+                </div>
+
+                <!-- Round Action Button -->
+                <div class="flex flex-col items-center gap-1.5">
+                  <div class="relative w-12 h-12 rounded-full bg-[#101522] flex items-center justify-center beam-engine-circle" data-beam-instance="circle-btn">
+                    <button class="relative z-10 w-9 h-9 rounded-full bg-black/80 hover:bg-white/10 flex items-center justify-center text-white transition-all">
+                      <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+                    <div class="beam-bloom-circle" data-beam-bloom=""></div>
+                  </div>
+                  <span class="text-[9px] font-mono text-slate-400">Round CTA</span>
+                </div>
+
+                <!-- Orbit Status Dial Mini -->
+                <div class="flex flex-col items-center gap-1.5">
+                  <div class="relative w-10 h-10 rounded-full bg-[#101522] flex items-center justify-center beam-engine-circle" data-beam-instance="circle-mini">
+                    <div class="relative z-10 w-7 h-7 rounded-full bg-cyan-900/40 flex items-center justify-center text-[9px] font-mono text-cyan-300">
+                      90%
+                    </div>
+                    <div class="beam-bloom-circle" data-beam-bloom=""></div>
+                  </div>
+                  <span class="text-[9px] font-mono text-slate-400">Mini Dial</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Agent chat windows, message boxes on focus, modal frames, avatar halos, circular telemetry dials.</div>
+            <div><strong class="text-slate-300">Palettes:</strong> Ocean, Sunset.</div>
+          </div>
+        </div>
+
+        <!-- Preset 3: Boundary Edge Rim Shimmer -->
+        <div class="bg-[#0f1420] border border-white/10 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 font-bold border border-cyan-800/50">size="edge-shimmer"</span>
+              <span class="text-[11px] text-cyan-300 font-mono font-semibold">Active Single Edge Stroke</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Boundary Edge Rim Shimmer</h3>
+            <p class="text-xs text-slate-400">
+              Sweeps an illuminated glint along a single horizontal border edge without enclosing the container. Animates continuously across the top rim or divider stroke.
+            </p>
+          </div>
+
+          <!-- Comparison with pulse-inner -->
+          <div class="bg-black/60 border border-white/10 rounded-xl p-3 space-y-2 text-[11px]">
+            <div class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Edge Shimmer vs. Pulse Inner:</div>
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+              <div class="bg-white/5 p-2 rounded-lg border border-white/5 space-y-1">
+                <div class="text-cyan-300 font-bold">size="edge-shimmer"</div>
+                <div class="text-slate-300">• <strong>Single edge only</strong> (top rim or divider line)</div>
+                <div class="text-slate-300">• <strong>Linear travel</strong> (glides left to right)</div>
+                <div class="text-slate-300">• Open stroke; does not enclose box</div>
+              </div>
+              <div class="bg-white/5 p-2 rounded-lg border border-white/5 space-y-1">
+                <div class="text-amber-300 font-bold">size="pulse-inner"</div>
+                <div class="text-slate-300">• <strong>All 4 inner borders</strong> simultaneously</div>
+                <div class="text-slate-300">• <strong>Stationary breathe</strong> (swells in/out)</div>
+                <div class="text-slate-300">• Enclosed box; zero outward bleed</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Mock Demo -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-5 space-y-4 shadow-inner">
+            <!-- Example A: Drawer Top Rim with active edge-shimmer -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs text-slate-300 font-mono">
+                <span>Example A: Docked Drawer Top Rim</span>
+                <span class="text-[10px] text-cyan-400 font-mono">Top Edge Only</span>
+              </div>
+              <div class="relative w-full rounded-xl overflow-hidden bg-black/70 border border-white/10 p-3.5 flex items-center justify-between beam-engine-edge-shimmer" data-beam-instance="line-drawer">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                  <span class="text-xs font-semibold text-slate-200">Drawer Header (Docked)</span>
+                </div>
+                <span class="text-[10px] text-cyan-300 font-mono bg-cyan-950/70 px-2 py-0.5 rounded border border-cyan-800/40">Glint Sweeping Top</span>
+                <div class="beam-bloom-edge-shimmer" data-beam-bloom=""></div>
+              </div>
+            </div>
+
+            <!-- Example B: Card Section Divider Bar with active shimmer -->
+            <div class="space-y-2 pt-1">
+              <div class="flex items-center justify-between text-xs text-slate-300 font-mono">
+                <span>Example B: Section Divider Bar</span>
+                <span class="text-[10px] text-slate-400 font-mono">Horizontal Rule</span>
+              </div>
+              <div class="bg-black/60 rounded-xl border border-white/10 p-3 space-y-2.5">
+                <div class="text-[11px] text-slate-300 font-medium">Upper Panel Content</div>
+                <div class="beam-divider-shimmer">
+                  <div class="beam-divider-bloom"></div>
+                </div>
+                <div class="text-[11px] text-slate-400">Lower Panel Content</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Docked drawer top borders, panel dividers, modal bottom footers.</div>
+            <div><strong class="text-slate-300">Palettes:</strong> Ocean (Brand Cyan/Blue), Sunset (Coral/Amber).</div>
+          </div>
+        </div>
+
+        <!-- Preset 4: Outer Aurora Halo -->
+        <div class="bg-[#0f1420] border border-white/10 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-400 font-bold border border-purple-800/50">size="pulse-outside"</span>
+              <span class="text-[11px] text-purple-400 font-mono">Volumetric Halo</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Outer Aurora Halo</h3>
+            <p class="text-xs text-slate-400">
+              Uncropped outward-blooming aurora breathing halo. The solid dark container blocks light from washing through the inside, while the 32px volumetric halo blooms softly outward into the surrounding canvas.
+            </p>
+          </div>
+
+          <!-- Code Usage Syntax -->
+          <div class="bg-black/60 border border-white/10 rounded-xl p-3 font-mono text-[11px] space-y-2">
+            <div class="text-[10px] text-purple-400 font-bold uppercase tracking-wider">How to Call in Code:</div>
+            <div class="space-y-1 text-slate-300">
+              <div class="text-slate-400 text-[10px]">// Wraps modal dialog, agent console, or focal card with outward halo</div>
+              <div class="text-purple-200">&lt;<span class="text-purple-300">BorderBeam</span> <span class="text-amber-300">size</span>=<span class="text-emerald-300">"pulse-outside"</span> <span class="text-amber-300">colorVariant</span>=<span class="text-emerald-300">"ocean"</span> <span class="text-amber-300">duration</span>={<span class="text-blue-300">6.0</span>}&gt;</div>
+              <div class="pl-2.5 text-slate-300">&lt;<span class="text-purple-300">AgentConsoleCard</span>&gt;...&lt;/<span class="text-purple-300">AgentConsoleCard</span>&gt;</div>
+              <div class="text-purple-200">&lt;/<span class="text-purple-300">BorderBeam</span>&gt;</div>
+            </div>
+          </div>
+
+          <!-- Live Mock Demo: Autonomous Agent Console with Solid Occlusion -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-7 relative flex items-center justify-center min-h-[190px] overflow-visible">
+            <!-- The Card with Pulse-Outside Beam & Solid Background to block interior light -->
+            <div class="relative w-full max-w-[280px] rounded-2xl bg-[#0a0e18] border border-white/15 p-4 shadow-2xl beam-engine-pulse-outside" data-beam-instance="pulse-outside-chat">
+              <!-- Geometric Command Center Watermark in background -->
+              <div class="absolute inset-0 flex items-center justify-center opacity-15 pointer-events-none filter blur-[2px]">
+                <svg class="w-16 h-16 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+              </div>
+
+              <!-- Content on solid dark card face -->
+              <div class="relative z-10 space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 font-bold text-[10px]">
+                      🦋
+                    </div>
+                    <span class="text-xs font-bold text-white">Caterpillar</span>
+                  </div>
+                  <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Active</span>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-snug">
+                  "Interior stays dark &amp; legible. Volumetric halo radiates purely outward into the canvas."
+                </p>
+                <!-- Embedded live thinking indicator -->
+                <div class="flex items-center gap-2 pt-1 border-t border-white/10">
+                  <canvas id="mini-thinking-orb" width="40" height="40" style="width: 16px; height: 16px;" class="w-4 h-4"></canvas>
+                  <span class="text-[9px] font-mono text-cyan-300">Reasoning in progress...</span>
+                </div>
+              </div>
+
+              <!-- Atmospheric Bloom DOM Layer (Layered behind the solid card) -->
+              <div class="beam-bloom-pulse-outside" data-beam-bloom=""></div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Agent chat console, modal dialogs, focal interactive cards.</div>
+            <div><strong class="text-slate-300">Palettes:</strong> Ocean, Sunset, Colorful.</div>
+          </div>
+        </div>
+
+        <!-- Preset 5: Action Pill Highlight -->
+        <div class="bg-[#0f1420] border border-white/10 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-800/50">size="sm"</span>
+              <span class="text-[11px] text-emerald-400 font-mono">Micro-Interaction</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Action Pill Highlight</h3>
+            <p class="text-xs text-slate-400">
+              Compact 1px perimeter highlight tailored for pills, badges, and high-priority call-to-action buttons. Uses two calibrated elliptical radial gradients hugging the border with an inner luminance field.
+            </p>
+          </div>
+
+          <!-- Live Mock Demo -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-8 flex flex-col items-center justify-center gap-4">
+            <div class="text-xs text-slate-400 font-mono">Agent Chat Launcher Button:</div>
+            
+            <!-- Authentic Size="sm" Pill Button -->
+            <div class="relative rounded-full beam-engine-sm inline-flex shadow-2xl" data-beam-instance="sm-chuck">
+              <button class="relative z-10 px-6 py-2.5 rounded-full bg-[#101522] text-xs font-bold text-white flex items-center gap-2 hover:bg-[#161c2d] transition-colors">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Launch Agent Session</span>
+              </button>
+              <div class="beam-bloom-sm" data-beam-bloom=""></div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Agent launcher pills, primary CTA action buttons.</div>
+            <div><strong class="text-slate-300">Palettes:</strong> Ocean, Sunset, Forest.</div>
+          </div>
+        </div>
+
+        <!-- Preset 6: Contained Inner Breathe Glow -->
+        <div class="bg-[#0f1420] border border-white/10 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-400 font-bold border border-amber-800/50">size="pulse-inner"</span>
+              <span class="text-[11px] text-amber-400 font-mono">Subtle &amp; Contained</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Contained Inner Breathe Glow</h3>
+            <p class="text-xs text-slate-400">
+              Keeps all luminance strictly within the element's inner perimeter. Breaths slowly at 6.0s duration to signify focused attention or passive engagement without background bleeding.
+            </p>
+          </div>
+
+          <!-- Live Mock Demo -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-6 flex items-center justify-center">
+            <div class="relative w-full max-w-[220px] rounded-2xl bg-black/80 p-4 text-center beam-engine-pulse-inner" data-beam-instance="pulse-inner-card">
+              <div class="relative z-10">
+                <div class="text-xs font-bold text-white">Contained Ambient Glow</div>
+                <div class="text-[10px] text-slate-400 mt-1">Keeps light inside perimeter</div>
+              </div>
+              <div class="beam-bloom-pulse-inner" data-beam-bloom=""></div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Secondary cards, telemetry panels, modal containers.</div>
+            <div><strong class="text-slate-300">Palettes:</strong> Sunset, Ocean, Monochrome.</div>
+          </div>
+        </div>
+
+        <!-- Preset 7: Site Action Button Matrix -->
+        <div class="bg-[#0f1420] border border-white/10 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-400 font-bold border border-blue-800/50">matrix-buttons</span>
+              <span class="text-[11px] text-blue-400 font-mono">Site Upgrades</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Action Button Matrix</h3>
+            <p class="text-xs text-slate-400">
+              Comparison of high-priority CTA buttons wrapped with traveling perimeter, full circle orbit, and micro-interaction pill beams for site-wide button polish.
+            </p>
+          </div>
+
+          <!-- Live Mock Demo -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-5 flex flex-col items-center justify-center gap-3">
+            <!-- Row 1: Primary Pill & Circular Orbit Button -->
+            <div class="flex items-center gap-3">
+              <!-- Button A: Primary Action Pill -->
+              <div class="relative rounded-full beam-engine-sm" data-beam-instance="sm-btn-1">
+                <button class="relative z-10 px-4 py-1.5 rounded-full bg-[#0d121c] text-xs font-semibold text-white hover:bg-[#141b2a] transition-all">
+                  Initialize Session
+                </button>
+                <div class="beam-bloom-sm" data-beam-bloom=""></div>
+              </div>
+
+              <!-- Button B: Round Orbit CTA -->
+              <div class="relative w-10 h-10 rounded-full beam-engine-circle flex items-center justify-center" data-beam-instance="matrix-btn-circle">
+                <button class="relative z-10 w-8 h-8 rounded-full bg-black/80 flex items-center justify-center text-cyan-400 hover:bg-white/10 transition-all text-xs">
+                  ▶
+                </button>
+                <div class="beam-bloom-circle" data-beam-bloom=""></div>
+              </div>
+            </div>
+
+            <!-- Row 2: Perimeter Traveling Button -->
+            <div class="relative rounded-xl beam-engine-travel-line w-full max-w-[200px]" data-beam-instance="matrix-btn-rect">
+              <button class="relative z-10 w-full px-4 py-2 rounded-xl bg-[#0d121c] text-xs font-mono text-cyan-300 hover:bg-[#141b2a] transition-all flex items-center justify-center gap-1.5">
+                <span>Run Quality Gates</span>
+              </button>
+              <div class="beam-bloom-travel-line" data-beam-bloom=""></div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Hero CTA buttons, circular audio controls, confirm actions, floating menu pills.</div>
+            <div><strong class="text-slate-300">Palettes:</strong> Ocean, Sunset.</div>
+          </div>
+        </div>
+
+        <!-- Preset 8: Smoked Glass Emblem Backdrop -->
+        <div class="bg-[#0f1420] border border-white/10 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-bold border border-slate-700">fx-smoked-glass</span>
+              <span class="text-[11px] text-cyan-400 font-mono">Refractive Depth</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Smoked Glass Emblem Backdrop</h3>
+            <p class="text-xs text-slate-400">
+              Universal 72% obsidian smoked glass pane with blurred brand watermark backdrop. Eliminates scroll stutter while adding optical depth behind text content.
+            </p>
+          </div>
+
+          <!-- Live Mock Demo -->
+          <div class="bg-[#151b2b] border border-white/10 rounded-xl p-6 flex items-center justify-center relative overflow-hidden min-h-[140px]">
+            <!-- Blurred Emblem Watermark in background -->
+            <div class="absolute inset-0 flex items-center justify-center opacity-25 filter blur-[6px]">
+              <svg class="w-24 h-24 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 3v18M3 12h18M6.5 6.5l11 11M6.5 17.5l11-11" />
+              </svg>
+            </div>
+            <!-- Smoked Glass Pane -->
+            <div class="relative z-10 obsidian-smoked-glass rounded-xl px-5 py-3 text-center shadow-2xl">
+              <div class="text-xs font-bold text-white">Agent Console Pane</div>
+              <div class="text-[10px] text-cyan-300 font-mono">72% Obsidian Smoked Glass</div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-white/5">
+            <div><strong class="text-slate-300">Target Locations:</strong> Agent chat backdrop, dialog window backgrounds, hero surfaces.</div>
+            <div><strong class="text-slate-300">Asset:</strong> SVG Brand Mark / Vector Emblem.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PILLAR 3: AI REASONING & THINKING INDICATORS -->
+    <section id="thinking" class="space-y-6 scroll-mt-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">7b</span>
+          <div>
+            <h2 class="text-xl font-bold text-white tracking-tight">Thinking indicators: what shows while an AI reasons</h2>
+            <p class="text-xs text-slate-400">Mathematical 3D Canvas Projection • 9 Reasoning States • 64px Avatar &amp; 20px Inline Scales • Zero WebGL / 60fps</p>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-2">
+          <!-- Play / Pause -->
+          <button id="btnPlayPause" class="px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 text-xs text-slate-300 hover:text-white flex items-center gap-1.5 transition-all">
+            <span id="playPauseIcon">⏸</span>
+            <span id="playPauseText">Pause</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- State Navigation Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-white/5 custom-scroll" id="statePillsContainer">
+        <!-- Built by JS: Rubik's Cube, Orbits, Globe, Wave, Constellation, Braid, Ribbon, Ring, Morph -->
+      </div>
+
+      <!-- SECTION 3.A: SPOTLIGHT STAGE -->
+      <div id="spotlightView" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        <!-- Left: 64px Avatar Scale Stage -->
+        <div class="lg:col-span-6 bg-[#0f1420] border border-white/10 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-mono text-emerald-400 font-semibold uppercase tracking-wider text-[11px]">Featured 64px Avatar</span>
+            <div class="flex items-center gap-2">
+              <span id="spotlightFavBadge" class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">★ Operator Favorite</span>
+              <span id="stateModeBadge" class="font-mono text-slate-400 text-[11px] bg-white/5 px-2 py-0.5 rounded border border-white/10">mode: rubik</span>
+            </div>
+          </div>
+
+          <!-- Canvas 64 Center Stage -->
+          <div class="my-8 flex flex-col items-center justify-center relative">
+            <div class="absolute w-28 h-28 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none"></div>
+            <div class="relative p-4 rounded-3xl bg-[#090d16] border border-white/15 shadow-2xl flex items-center justify-center">
+              <canvas id="canvasSpotlight64" width="128" height="128" style="width: 64px; height: 64px;"></canvas>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/5 flex items-end justify-between">
+            <div>
+              <div id="spotlightTitle" class="text-base font-bold text-white capitalize tracking-tight">🎲 Rubik's Cube (Solving)</div>
+              <div id="spotlightBlurb" class="text-xs text-slate-400 mt-0.5">3D bands scramble, rotate across orthogonal axes, then click back into alignment</div>
+            </div>
+            <div class="flex items-center gap-1 text-[11px] font-mono">
+              <span class="text-slate-500">Speed:</span>
+              <button class="speed-btn px-2 py-0.5 rounded bg-black/40 text-slate-400 hover:text-white" data-speed="0.5">0.5x</button>
+              <button class="speed-btn px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/40" data-speed="1.0">1.0x</button>
+              <button class="speed-btn px-2 py-0.5 rounded bg-black/40 text-slate-400 hover:text-white" data-speed="2.0">2.0x</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: 20px Inline Stream Indicator Simulation -->
+        <div class="lg:col-span-6 bg-[#0f1420] border border-white/10 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-mono text-cyan-400 font-semibold uppercase tracking-wider text-[11px]">20px Inline Indicator</span>
+              <span class="font-mono text-slate-500 text-[10px]">Zero WebGL • 55 KB Bundle</span>
+            </div>
+            <h3 class="text-base font-bold text-white">Live Stream &amp; Chat Integration</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Ultra-lightweight 20px sub-scale projection embedded inline in markdown stream responses, chat bubbles, and status badges.
+            </p>
+          </div>
+
+          <!-- Chat bubble mockup -->
+          <div class="space-y-3">
+            <div class="bg-[#151b2b] border border-white/10 rounded-xl p-4 space-y-3 shadow-inner">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 pb-2 border-b border-white/5">
+                <span class="flex items-center gap-1.5 text-cyan-300">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                  <span>Agent Reasoning Stream</span>
+                </span>
+                <span>Latency: 38ms</span>
+              </div>
+              <div class="bg-black/60 border border-white/10 rounded-lg p-3 flex items-center gap-3">
+                <div class="shrink-0 p-1.5 rounded-lg bg-[#090d16] border border-white/10 flex items-center justify-center">
+                  <canvas id="canvasSpotlight20" width="40" height="40" style="width: 20px; height: 20px;"></canvas>
+                </div>
+                <div class="space-y-0.5">
+                  <div id="chatSimText" class="text-xs font-semibold text-white">Synthesizing verified solution...</div>
+                  <div class="text-[10px] font-mono text-slate-400">Stream buffer: 1,420 tokens • Real-time synthesis</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 pt-2 border-t border-white/5 flex items-center justify-between font-mono">
+            <span>Canvas Context: 2D sub-pixel transform</span>
+            <span class="text-emerald-400 font-semibold">60 FPS Smooth</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECTION 3.B: ALL 9 INDICATOR MATRIX GALLERY (ALWAYS VISIBLE) -->
+      <div class="space-y-4 pt-6 border-t border-white/10">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-800/50">ALL 9 OPTIONS</span>
+            <h3 class="text-base font-bold text-white">Multi-Indicator Matrix Gallery</h3>
+          </div>
+          <span class="text-xs text-slate-400 font-mono">Click Any Option To Feature In Spotlight</span>
+        </div>
+
+        <div id="gridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- All 9 Cards with running 64px canvases injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PILLAR 4: APPROVED COLOR PALETTES -->
+    <section class="space-y-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-amber-500/20 text-amber-400 font-mono text-xs font-bold">7c</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Palettes: the approved color sets</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Ocean Palette -->
+        <div class="bg-[#0f1420] border border-cyan-500/30 rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">Command Center Signature</span>
+              <h3 class="text-lg font-bold text-white">Ocean Palette (<code class="text-cyan-300 text-xs">colorVariant="ocean"</code>)</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-cyan-950 text-cyan-400 text-xs font-mono border border-cyan-800/50">Primary Brand</span>
+          </div>
+
+          <div class="h-8 rounded-xl bg-gradient-to-r from-[#00C2FF] via-[#0072FF] to-[#6B00FF] shadow-lg"></div>
+
+          <div class="grid grid-cols-3 gap-2 text-xs font-mono">
+            <div class="bg-black/40 p-2 rounded-lg border border-white/5">
+              <div class="text-slate-400">Electric Cyan</div>
+              <div class="text-cyan-400 font-bold">#00C2FF</div>
+            </div>
+            <div class="bg-black/40 p-2 rounded-lg border border-white/5">
+              <div class="text-slate-400">Aero Blue</div>
+              <div class="text-blue-400 font-bold">#0072FF</div>
+            </div>
+            <div class="bg-black/40 p-2 rounded-lg border border-white/5">
+              <div class="text-slate-400">Violet Indigo</div>
+              <div class="text-purple-400 font-bold">#6B00FF</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sunset Palette -->
+        <div class="bg-[#0f1420] border border-amber-500/30 rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-mono text-amber-400 font-bold uppercase tracking-wider">Horizon Accent</span>
+              <h3 class="text-lg font-bold text-white">Sunset Palette (<code class="text-amber-300 text-xs">colorVariant="sunset"</code>)</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-amber-950 text-amber-400 text-xs font-mono border border-amber-800/50">Warm Accent</span>
+          </div>
+
+          <div class="h-8 rounded-xl bg-gradient-to-r from-[#FF4B4B] via-[#FF8533] to-[#FFC700] shadow-lg"></div>
+
+          <div class="grid grid-cols-3 gap-2 text-xs font-mono">
+            <div class="bg-black/40 p-2 rounded-lg border border-white/5">
+              <div class="text-slate-400">Sunset Coral</div>
+              <div class="text-red-400 font-bold">#FF4B4B</div>
+            </div>
+            <div class="bg-black/40 p-2 rounded-lg border border-white/5">
+              <div class="text-slate-400">Radiant Amber</div>
+              <div class="text-orange-400 font-bold">#FF8533</div>
+            </div>
+            <div class="bg-black/40 p-2 rounded-lg border border-white/5">
+              <div class="text-slate-400">Luminous Gold</div>
+              <div class="text-amber-400 font-bold">#FFC700</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PILLAR 5: IMPLEMENTATION ROADMAP TABLE -->
+    <section class="space-y-6">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-400 font-mono text-xs font-bold">7d</span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Placement: which preset goes where</h2>
+      </div>
+
+      <div class="bg-[#0f1420] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-white/5 text-slate-300 font-mono uppercase tracking-wider border-b border-white/10">
+              <tr>
+                <th class="p-4">Target Surface</th>
+                <th class="p-4">Effect Preset</th>
+                <th class="p-4">Palette</th>
+                <th class="p-4">Speed &amp; Strength</th>
+                <th class="p-4">Behavior &amp; Trigger</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5 text-slate-300">
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>Autonomous Agent Console</span>
+                </td>
+                <td class="p-4 font-mono text-purple-300">size="pulse-outside"</td>
+                <td class="p-4 font-mono text-cyan-400">Ocean</td>
+                <td class="p-4 font-mono">6.0s • 90%</td>
+                <td class="p-4 text-slate-400">Active when agent dialog is open; soft outer halo spilling onto page.</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                  <span>Console Smoked Backdrop</span>
+                </td>
+                <td class="p-4 font-mono text-slate-300">fx-smoked-glass</td>
+                <td class="p-4 font-mono text-slate-400">Obsidian</td>
+                <td class="p-4 font-mono">Static (0ms)</td>
+                <td class="p-4 text-slate-400">Geometric brand mark blurred behind 72% dark glass pane (no scroll jitter).</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>Perimeter Shimmer Card (Full Loop)</span>
+                </td>
+                <td class="p-4 font-mono text-cyan-300">size="line" / travel="loop"</td>
+                <td class="p-4 font-mono text-cyan-400">Ocean / Sunset</td>
+                <td class="p-4 font-mono">6.0s • 90%</td>
+                <td class="p-4 text-slate-400">Shimmer glow cluster traveling 360° continuously around all card boundaries.</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>Circular Avatar &amp; Round CTA</span>
+                </td>
+                <td class="p-4 font-mono text-cyan-300">size="circle" / orbit</td>
+                <td class="p-4 font-mono text-cyan-400">Ocean / Sunset</td>
+                <td class="p-4 font-mono">6.0s • 90%</td>
+                <td class="p-4 text-slate-400">Continuous 1px hairline laser ring traveling 360° around circular perimeters.</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>Global Chat Input Bar (Sweep)</span>
+                </td>
+                <td class="p-4 font-mono text-cyan-300">size="line" / travel="sweep"</td>
+                <td class="p-4 font-mono text-cyan-400">Ocean</td>
+                <td class="p-4 font-mono">6.0s • 90%</td>
+                <td class="p-4 text-slate-400">Shimmer glow cluster gliding back and forth across the bottom border edge.</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span>Lesson / Tool Menu Drawer</span>
+                </td>
+                <td class="p-4 font-mono text-amber-300">size="edge-shimmer"</td>
+                <td class="p-4 font-mono text-amber-400">Sunset / Ocean</td>
+                <td class="p-4 font-mono">6.0s • 90%</td>
+                <td class="p-4 text-slate-400">Shimmers along top rim when closed; encompasses container when drawer opens.</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span>Agent Launcher Pill</span>
+                </td>
+                <td class="p-4 font-mono text-emerald-300">size="sm"</td>
+                <td class="p-4 font-mono text-cyan-400">Ocean / Sunset</td>
+                <td class="p-4 font-mono">6.0s • 90%</td>
+                <td class="p-4 text-slate-400">Continuous 1px hairline perimeter highlight around pill button.</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="p-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                  <span>Site Action Buttons</span>
+                </td>
+                <td class="p-4 font-mono text-blue-300">matrix-buttons</td>
+                <td class="p-4 font-mono text-slate-400">Contextual</td>
+                <td class="p-4 font-mono">3.1s / 6.0s</td>
+                <td class="p-4 text-slate-400">Round orbit or traveling perimeter beam on hover or focus for primary action elements.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+
+  </div>
+
+  <!-- AUTHENTIC THINKING ORBS ENGINE JAVASCRIPT -->
+  <script>
+    // Pure 2D Canvas Mathematical 3D-Projection Engine (from thinking_orbs.html)
+    function U(n, s, t) { return n + (s - n) * t; }
+    function nt(n) { return n - Math.floor(n); }
+    function G(n, s) {
+      const t = Math.floor(n), r = Math.floor(s);
+      let a = n - t, o = s - r;
+      a = a * a * (3 - 2 * a), o = o * o * (3 - 2 * o);
+      const c = E(t, r), M = E(t + 1, r), h = E(t, r + 1), m = E(t + 1, r + 1);
+      return c + (M - c) * a + (h - c) * o + (c - M - h + m) * a * o;
+    }
+    function E(n, s) {
+      const t = Math.sin(n * 12.9898 + s * 78.233) * 43758.5453;
+      return t - Math.floor(t);
+    }
+    function J(n, s) {
+      const t = Math.PI * (3 - Math.sqrt(5)), r = 1 - 2 * (n + 0.5) / s, a = Math.sqrt(1 - r * r), o = n * t;
+      return [a * Math.cos(o), r, a * Math.sin(o)];
+    }
+    function et(n, s) {
+      return Math.atan2(Math.sin(n - s), Math.cos(n - s));
+    }
+    function _(n, s, t, r, a) {
+      const o = Math.sin(s), c = Math.cos(s), M = Math.sin(n), h = Math.cos(n);
+      return (m, D, p) => {
+        const e = m * h + p * M, l = -m * M + p * h, R = D * c - l * o, w = D * o + l * c;
+        return [t + e * a, r - R * a, w];
+      };
+    }
+    function rt(n, s, t, r = 0.3) {
+      for (const a of s) {
+        const o = a.a ?? 1, c = Math.min(1, Math.max(0, a.white)), M = Math.round((t ? 1 - c : c) * 255);
+        n.fillStyle = `rgba(${M},${M},${M},${o})`, n.beginPath(), n.arc(a.x, a.y, a.r, 0, Math.PI * 2), n.fill();
+      }
+    }
+    function it(n, s, t) {
+      for (const r of s) {
+        const a = r.a ?? 1, o = Math.min(1, Math.max(0, r.white)), c = Math.round((t ? 1 - o : o) * 255);
+        n.strokeStyle = `rgba(${c},${c},${c},${a})`, n.lineWidth = r.w, n.beginPath(), n.moveTo(r.x1, r.y1), n.lineTo(r.x2, r.y2), n.stroke();
+      }
+    }
+    function L(n, s, t = 0.3) {
+      const r = [];
+      for (const a of n)
+        (a.a ?? 1) < 0.02 || (a.r = Math.max(t, a.r), r.push(a));
+      return r.sort((a, o) => a.z - o.z), { dots: r, lines: s.filter((a) => (a.a ?? 1) >= 0.02) };
+    }
+    function ht(n, s, t) {
+      s.lines.length && it(n, s.lines, t), rt(n, s.dots, t);
+    }
+    function $(n, s) {
+      return (n / 300) ** s;
+    }
+    const Mt = (n, s, t) => {
+      const r = n / 2, a = n / 2, o = n / 2 * 0.76, c = _(s * 0.4, 0.3, r, a, 1), M = $(n, t.rsPow ?? 0.6), h = [], m = t.ghostN ?? 150;
+      for (let e = 0; e < m; e++) {
+        const l = J(e, m), [R, w, i] = c(l[0] * o, l[1] * o, l[2] * o), u = (i / o + 1) / 2;
+        h.push({ x: R, y: w, z: i, r: 0.8 * M, white: 0.78, a: 0.1 + 0.22 * u });
+      }
+      const D = t.strandN ?? 52, p = t.turns ?? 3;
+      for (let e = 0; e < 3; e++) {
+        const l = e / 3 * 2 * Math.PI;
+        for (let R = 0; R < D; R++) {
+          const w = (nt(R / D + s * 0.045) * 2 - 1) * 0.96, i = Math.sqrt(Math.max(0, 1 - w * w)), u = Math.min(1, (1 - Math.abs(w)) / 0.1), y = w * Math.PI * p + l, b = 1 + 0.075 * Math.sin(w * Math.PI * p * 2 + l * 2 + s * 0.8), f = i * o * b, [P, x, g] = c(Math.cos(y) * f, w * o * b, Math.sin(y) * f), d = (g / o + 1) / 2;
+          h.push({
+            x: P, y: x, z: g,
+            r: ((t.rBase ?? 1.2) + (t.rDepth ?? 1.8) * d) * M,
+            white: 0.55 - 0.45 * d,
+            a: u * (0.45 + 0.55 * d)
+          });
+        }
+      }
+      return L(h, [], t.rMin);
+    };
+    function lt(n, s, t, r) {
+      const a = 2 * s * t + r, o = n % a, c = new Array(s).fill(0);
+      let M = -1;
+      if (o < 2 * s * t) {
+        const h = Math.floor(o / t), m = (o - h * t) / t, p = 1 - (1 - Math.min(1, m / 0.7)) ** 3;
+        if (h < s) {
+          for (let e = 0; e < h; e++) c[e] = 1;
+          c[h] = p, M = h;
+        } else {
+          const e = 2 * s - 1 - h;
+          for (let l = 0; l < e; l++) c[l] = 1;
+          c[e] = 1 - p, M = e;
+        }
+      }
+      return { amount: c, active: M };
+    }
+    function pt(n, s, t) {
+      let [r, a, o] = n, c = !1;
+      for (let M = 0; M < s.length; M++) {
+        if (t.amount[M] <= 0) continue;
+        const h = s[M], m = h.axis === 0 ? r : h.axis === 1 ? a : o;
+        if (m < h.lo || m >= h.hi) continue;
+        M === t.active && (c = !0);
+        const D = h.ang * t.amount[M], p = Math.cos(D), e = Math.sin(D);
+        if (h.axis === 0) {
+          const l = a * p - o * e;
+          o = a * e + o * p, a = l;
+        } else if (h.axis === 1) {
+          const l = r * p + o * e;
+          o = -r * e + o * p, r = l;
+        } else {
+          const l = r * p - a * e;
+          a = r * e + a * p, r = l;
+        }
+      }
+      return [r, a, o, c];
+    }
+    function ut(n) {
+      const s = [];
+      for (let t = 0; t < n; t++) {
+        const r = Math.min(2, Math.floor(E(t, 2.3) * 3)), a = -1 + 0.5 * Math.min(3, Math.floor(E(t, 5.9) * 4)), o = E(t, 7.7) < 0.5 ? 1 : -1;
+        s.push({ axis: r, lo: a, hi: a + 0.5, ang: o * Math.PI / 2 });
+      }
+      return s;
+    }
+    const ft = (n, s, t) => {
+      const a = n / 2, o = n / 2, c = n / 2 * 0.82, M = 0.4 + 0.06 * Math.sin(s * 0.35), h = _(s * 0.5, M, a, o, c), m = s * (0.5 + (1.7 - 0.5) * (t.scanMul ?? 1)), D = $(n, t.rsPow ?? 0.6), p = t.dimBase ?? 1, e = [], l = t.latRings ?? 17, R = t.lonDensity ?? 44;
+      for (let w = 0; w <= l; w++) {
+        const i = -Math.PI / 2 + w / l * Math.PI, u = Math.cos(i), y = Math.sin(i), b = Math.max(1, Math.round(Math.abs(u) * R));
+        for (let f = 0; f < b; f++) {
+          const P = f / b * 2 * Math.PI, [x, g, d] = h(u * Math.cos(P), y, u * Math.sin(P)), v = (d + 1) / 2, k = et(P + s * 0.5, m), N = Math.exp(-(k * k) / 0.18) * Math.max(0, d);
+          e.push({
+            x, y, z: d,
+            r: ((t.rBase ?? 0.6) + (t.rDepth ?? 1.7) * v + (t.rBoost ?? 1) * N) * D,
+            white: (t.inkFar ?? 0.62) - (t.inkSpan ?? 0.54) * v,
+            a: p + (1 - p) * Math.min(1, N)
+          });
+        }
+      }
+      return L(e, [], t.rMin);
+    }, dt = (n, s, t) => {
+      const r = n / 2, a = n / 2, o = n / 2 * 0.82, c = _(s * 0.55, 0.35 + 0.1 * Math.sin(s * 0.9), r, a, o), M = $(n, t.rsPow ?? 0.6), h = t.moveCount ?? 14, m = ut(h), D = lt(s, h, 0.42, 1.2), p = [], e = t.latRings ?? 15, l = t.lonDensity ?? 40;
+      for (let R = 0; R <= e; R++) {
+        const w = -Math.PI / 2 + R / e * Math.PI, i = Math.cos(w), u = Math.sin(w), y = Math.max(1, Math.round(Math.abs(i) * l));
+        for (let b = 0; b < y; b++) {
+          const f = b / y * 2 * Math.PI, [P, x, g, d] = pt([i * Math.cos(f), u, i * Math.sin(f)], m, D), [v, k, N] = c(P, x, g), z = (N + 1) / 2;
+          p.push({
+            x: v, y: k, z: N,
+            r: ((t.rBase ?? 0.6) + (t.rDepth ?? 1.7) * z + (d ? t.rActive ?? 0.3 : 0)) * M,
+            white: (t.inkFar ?? 0.62) - (t.inkSpan ?? 0.54) * z - (d ? 0.14 : 0)
+          });
+        }
+      }
+      return L(p, [], t.rMin);
+    }, bt = (n, s, t) => {
+      const r = n / 2, a = n / 2, o = n / 2 * 0.874, c = _(s * 0.18, 0.38, r, a, 1), M = $(n, t.rsPow ?? 0.6), h = [], m = t.rings ?? 15, D = t.lonDensity ?? 40;
+      for (let p = 0; p <= m; p++) {
+        const e = -Math.PI / 2 + p / m * Math.PI, l = Math.cos(e), R = Math.sin(e), w = 0.62 * Math.sin(s * 2.1 - p * 0.52) + 0.38 * Math.sin(s * 1.27 + p * 0.83), i = o * (0.88 + 0.105 * w), u = Math.max(1, Math.round(Math.abs(l) * D));
+        for (let y = 0; y < u; y++) {
+          const b = y / u * 2 * Math.PI, [f, P, x] = c(l * Math.cos(b) * i, R * i, l * Math.sin(b) * i), g = (x / o + 1) / 2, d = Math.max(0, w);
+          h.push({
+            x: f, y: P, z: x,
+            r: ((t.rBase ?? 0.6) + (t.rDepth ?? 1.7) * g) * (1 + 0.4 * d) * M,
+            white: 0.66 - 0.56 * g - 0.1 * d
+          });
+        }
+      }
+      return L(h, [], t.rMin);
+    };
+    function xt(n) { return n * n * (3 - 2 * n); }
+    function st(n) {
+      const s = n.length, t = [];
+      let r = 0;
+      for (let a = 0; a < s; a++) {
+        const o = n[a], c = n[(a + 1) % s], M = Math.hypot(c[0] - o[0], c[1] - o[1]);
+        t.push(M), r += M;
+      }
+      return (a) => {
+        let o = a * r, c = 0;
+        for (; o > t[c] && c < s - 1; )
+          o -= t[c], c++;
+        const M = n[c], h = n[(c + 1) % s], m = t[c] ? Math.min(1, o / t[c]) : 0;
+        return [M[0] + (h[0] - M[0]) * m, M[1] + (h[1] - M[1]) * m];
+      };
+    }
+    const yt = (n) => {
+      const s = -Math.PI / 2 + n * 2 * Math.PI;
+      return [Math.cos(s) * 0.24, Math.sin(s) * 0.24];
+    }, gt = st([
+      [0, -0.26], [0.24, 0.16], [-0.24, 0.16]
+    ]), mt = st([
+      [0, -0.2], [0.2, -0.2], [0.2, 0.2], [-0.2, 0.2], [-0.2, -0.2]
+    ]), H = [yt, gt, mt];
+    function wt(n) { return Math.max(6, Math.round(34 * n)); }
+    const V = 1.4, ot = 0.9, Q = V + ot, Pt = (n, s, t) => {
+      const r = H.length, mod = Q * r, a = ((s % mod) + mod) % mod;
+      const o = Math.min(r - 1, Math.max(0, Math.floor(a / Q)));
+      const c = a - o * Q, M = c > V ? xt((c - V) / ot) : 0, h = t.spread ?? 1, m = H[o], D = H[(o + 1) % r], p = 160, e = [];
+      for (let x = 0; x < p; x++) {
+        const g = x / p, d = m(g), v = D(g);
+        e.push([(d[0] + (v[0] - d[0]) * M) * h, (d[1] + (v[1] - d[1]) * M) * h]);
+      }
+      const l = [];
+      let R = 0;
+      for (let x = 0; x < p; x++) {
+        const g = e[x], d = e[(x + 1) % p], v = Math.hypot(d[0] - g[0], d[1] - g[1]);
+        l.push(v), R += v;
+      }
+      const w = wt(t.iconD ?? 1), i = (t.rDot ?? 0.021) * 1.35 * h, u = 1 + 0.02 * Math.sin(c * 3.1), y = [], b = n / 2;
+      let f = 0, P = 0;
+      for (let x = 0; x < w; x++) {
+        const g = x / w * R;
+        for (; P + l[f] < g && f < p - 1; )
+          P += l[f], f++;
+        const d = e[f], v = e[(f + 1) % p], k = l[f] ? Math.min(1, (g - P) / l[f]) : 0, N = (d[0] + (v[0] - d[0]) * k) * u, z = (d[1] + (v[1] - d[1]) * k) * u;
+        y.push({
+          x: b + N * n, y: b + z * n, z: 0,
+          r: Math.max(0.35, i * n), white: 0.1
+        });
+      }
+      return L(y, [], t.rMin);
+    }, Rt = (n, s, t) => {
+      const r = n / 2, a = n / 2, o = n / 2 * 0.82, c = _(s * 0.12, 0.3, r, a, 1), M = $(n, t.rsPow ?? 0.6), h = [], m = t.orbitN ?? 12, D = t.ghostN ?? 40, p = t.particles ?? 3;
+      for (let e = 0; e < m; e++) {
+        const l = E(e, 1.7), R = E(e, 5.2), w = E(e, 8.9), i = o * (0.45 + 0.52 * l), u = l * 2 * Math.PI, y = Math.acos(2 * R - 1), b = Math.sin(y) * Math.cos(u), f = Math.cos(y), P = Math.sin(y) * Math.sin(u);
+        let x = -f, g = b;
+        const d = 0, v = Math.max(1e-6, Math.sqrt(x * x + g * g));
+        x /= v, g /= v;
+        const k = f * d - P * g, N = P * x - b * d, z = b * g - f * x, O = (0.25 + 0.55 * w) * (w > 0.5 ? 1 : -1);
+        for (let B = 0; B < D; B++) {
+          const I = B / D * 2 * Math.PI, [S, A, T] = c(
+            (x * Math.cos(I) + k * Math.sin(I)) * i,
+            (g * Math.cos(I) + N * Math.sin(I)) * i,
+            (d * Math.cos(I) + z * Math.sin(I)) * i
+          ), C = (T / i + 1) / 2;
+          h.push({
+            x: S, y: A, z: T,
+            r: (t.ghostR ?? 0.9) * M,
+            white: 0.72,
+            a: (t.ghostA ?? 0.5) * (0.4 + 0.6 * C)
+          });
+        }
+        for (let B = 0; B < p; B++) {
+          const I = s * O + B / p * 2 * Math.PI + R * 6, [S, A, T] = c(
+            (x * Math.cos(I) + k * Math.sin(I)) * i,
+            (g * Math.cos(I) + N * Math.sin(I)) * i,
+            (d * Math.cos(I) + z * Math.sin(I)) * i
+          ), C = (T / i + 1) / 2;
+          h.push({
+            x: S, y: A, z: T,
+            r: ((t.partR ?? 1.2) + (t.partRDepth ?? 1.6) * C) * M,
+            white: 0.3 - 0.22 * C
+          });
+        }
+      }
+      return L(h, [], t.rMin);
+    }, Z = (n, s, t) => {
+      const r = n / 2, a = n / 2, o = n / 2 * 0.78, c = t.spin ?? 1, M = 0.3, h = _(s * 0.1 * c, M, r, a, 1), m = $(n, t.rsPow ?? 0.6), D = [], p = t.ghostN ?? 150;
+      for (let z = 0; z < p; z++) {
+        const O = J(z, p), [B, I, S] = h(O[0] * o, O[1] * o, O[2] * o), A = (S / o + 1) / 2;
+        D.push({ x: B, y: I, z: S, r: 0.8 * m, white: 0.78, a: 0.1 + 0.22 * A });
+      }
+      const e = s * 0.24 * c, l = t.faceOn ? -M : 0.55 + 0.3 * Math.sin(s * 0.18) * c, R = Math.cos(e), w = 0, i = Math.sin(e), u = -i * Math.sin(l), y = Math.cos(l), b = R * Math.sin(l), f = w * b - i * y, P = i * u - R * b, x = R * y - w * u, g = 0.23 * (t.wobMul ?? 1), d = t.faceOn ? o / (1 + 0.85 * g) : o, v = t.lanes ?? 5, k = t.segs ?? 88, N = Math.max(1, Math.round(v * (t.bandMul ?? 1)));
+      for (let z = 0; z < N; z++) {
+        const O = (z - (N - 1) / 2) * 0.075, B = Math.abs(z - (N - 1) / 2) / Math.max(1, (N - 1) / 2);
+        for (let I = 0; I < k; I++) {
+          const S = I / k * 2 * Math.PI, A = (0.16 * Math.sin(S * 3 - s * 1.7 + z * 0.22) + 0.07 * Math.sin(S * 5 + s * 1.1)) * (t.wobMul ?? 1), T = t.faceOn ? 1 + A : 1, C = t.faceOn ? O : O + A, q = R * Math.cos(S) + u * Math.sin(S) + f * C, F = w * Math.cos(S) + y * Math.sin(S) + P * C, j = i * Math.cos(S) + b * Math.sin(S) + x * C, W = Math.sqrt(q * q + F * F + j * j), Y = d * T, [ct, at, X] = h(q / W * Y, F / W * Y, j / W * Y), K = (X / o + 1) / 2;
+          D.push({
+            x: ct, y: at, z: X,
+            r: ((t.rBase ?? 1.1) + (t.rDepth ?? 1.7) * K) * (1 - 0.25 * B) * m,
+            white: 0.52 - 0.44 * K + 0.18 * B,
+            a: 0.4 + 0.6 * K
+          });
+        }
+      }
+      return L(D, [], t.rMin);
+    }, Dt = (n, s, t) => {
+      const r = n / 2, a = n / 2, o = n / 2 * 0.8 * (t.spread ?? 1), c = _(s * 0.12, 0.32, r, a, o), M = $(n, t.rsPow ?? 0.6), h = t.nodeN ?? 30, m = t.thr ?? 0.72, D = t.nodeR ?? 1.4, p = t.nodeRDepth ?? 1.8, e = [];
+      for (let i = 0; i < h; i++) {
+        const u = J(i, h), y = u[0] + 0.3 * (G(i * 0.31 + 9, s * 0.24) - 0.5) * 2, b = u[1] + 0.3 * (G(i * 0.53 + 27, s * 0.21) - 0.5) * 2, f = u[2] + 0.3 * (G(i * 0.77 + 55, s * 0.27) - 0.5) * 2, P = Math.sqrt(y * y + b * b + f * f);
+        e.push([y / P, b / P, f / P]);
+      }
+      const l = [], R = [];
+      for (let i = 0; i < h; i++)
+        for (let u = i + 1; u < h; u++) {
+          const y = e[i][0] - e[u][0], b = e[i][1] - e[u][1], f = e[i][2] - e[u][2], P = Math.sqrt(y * y + b * b + f * f);
+          if (P >= m) continue;
+          const [x, g, d] = c(e[i][0], e[i][1], e[i][2]), [v, k, N] = c(e[u][0], e[u][1], e[u][2]), z = ((d + N) / 2 + 1) / 2;
+          l.push({
+            x1: x, y1: g, x2: v, y2: k,
+            white: 0.42,
+            a: (1 - P / m) * (0.3 + 0.55 * z),
+            w: Math.max(0.6, (t.lineW ?? 0.8) * M)
+          });
+        }
+      for (let i = 0; i < h; i++) {
+        const [u, y, b] = c(e[i][0], e[i][1], e[i][2]), f = (b + 1) / 2, P = 1 + 0.25 * Math.sin(s * 1.4 + i * 2.7);
+        R.push({
+          x: u, y, z: b,
+          r: (D + p * f) * P * M,
+          white: 0.55 - 0.45 * f
+        });
+      }
+      const w = t.signals ?? 5;
+      for (let i = 0; i < w; i++) {
+        const u = Math.floor(s * 0.55 + i * 7.31), y = Math.floor(E(u, i * 3.1 + 1.7) * h), b = Math.floor(E(u, i * 5.7 + 4.2) * h);
+        if (y === b) continue;
+        const f = nt(s * 0.55 + i * 7.31), P = U(e[y][0], e[b][0], f), x = U(e[y][1], e[b][1], f), g = U(e[y][2], e[b][2], f), d = Math.max(1e-6, Math.sqrt(P * P + x * x + g * g)), [v, k, N] = c(P / d, x / d, g / d), z = (N + 1) / 2;
+        R.push({
+          x: v, y: k, z: N,
+          r: (D * 1.5 + p * z) * M,
+          white: 0.05,
+          a: 0.5 + 0.5 * z
+        });
+      }
+      return L(R, l, t.rMin);
+    }, vt = {
+      orbits: Rt, globe: ft, rubik: dt, wave: bt, web: Dt, braid: Mt, ribbon: Z, ring: Z, morph: Pt
+    }, Ct = Object.fromEntries(
+      Object.entries(vt).map(([n, s]) => [n, (t, r, a, o, c) => ht(t, s(r, a, c), o)])
+    ), zt = [
+      ["latRings", "lonDensity"], ["rings", "lonDensity"], ["lanes", "segs"]
+    ], Nt = ["orbitN", "ghostN", "nodeN", "strandN", "signals"], It = ["iconD"], kt = [
+      "rBase", "rDepth", "rActive", "rDot", "ghostR", "partR", "partRDepth", "nodeR", "nodeRDepth"
+    ];
+    function St(n, s) {
+      const t = { ...n }, r = new Set(), a = Math.sqrt(s);
+      for (const [o, c] of zt) {
+        const M = t[o], h = t[c];
+        M != null && h != null && !r.has(o) && !r.has(c) && (t[o] = Math.max(2, Math.round(M * a)), t[c] = Math.max(2, Math.round(h * a)), r.add(o), r.add(c));
+      }
+      for (const o of Nt) {
+        const c = t[o];
+        c != null && c !== 0 && !r.has(o) && (t[o] = Math.max(1, Math.round(c * s)));
+      }
+      for (const o of It) {
+        const c = t[o];
+        c != null && (t[o] = Math.max(0.02, c * s));
+      }
+      return t;
+    }
+    function Bt(n, s) {
+      const t = { ...n };
+      for (const r of kt) {
+        const a = t[r];
+        a != null && (t[r] = a * s);
+      }
+      return t.rSizeMul = (t.rSizeMul ?? 1) * s, t;
+    }
+    const Et = {
+      globe: { latRings: 17, lonDensity: 44, rBase: 0.6, rDepth: 1.7, rBoost: 1, inkFar: 0.62, inkSpan: 0.54, rsPow: 0.6, rMin: 0.3 },
+      orbits: { orbitN: 12, ghostN: 40, ghostR: 0.9, ghostA: 0.5, particles: 3, partR: 1.2, partRDepth: 1.6, rsPow: 0.6, rMin: 0.3 },
+      rubik: { latRings: 15, lonDensity: 40, moveCount: 14, rBase: 0.6, rDepth: 1.7, rActive: 0.3, inkFar: 0.62, inkSpan: 0.54, rsPow: 0.6, rMin: 0.3 },
+      wave: { rings: 15, lonDensity: 40, rBase: 0.6, rDepth: 1.7, rsPow: 0.6, rMin: 0.3 },
+      web: { nodeN: 30, thr: 0.72, signals: 5, nodeR: 1.4, nodeRDepth: 1.8, lineW: 0.8, rsPow: 0.6, rMin: 0.3 },
+      braid: { strandN: 52, turns: 3, ghostN: 150, rBase: 1.2, rDepth: 1.8, rsPow: 0.6, rMin: 0.3 },
+      ribbon: { lanes: 5, segs: 88, ghostN: 150, rBase: 1.1, rDepth: 1.7, rsPow: 0.6, rMin: 0.3 },
+      ring: { lanes: 5, segs: 88, ghostN: 0, faceOn: 1, rBase: 1.1, rDepth: 1.7, rsPow: 0.6, rMin: 0.3 },
+      morph: { rDot: 0.021, iconD: 1, rMin: 0.25 }
+    }, Ot = {
+      working: "orbits", searching: "globe", solving: "rubik", listening: "wave",
+      connecting: "web", weaving: "braid", composing: "ribbon", breathing: "ring", shaping: "morph"
+    }, At = {
+      orbits: { 64: { speed: 1.885, count: 1, size: 1 }, 20: { speed: 3.9, count: 0.238, size: 2.4 } },
+      globe: { 64: { speed: 2.015, count: 0.42, size: 1.15, extra: { scanMul: 4.08, dimBase: 0.45 } }, 20: { speed: 2.665, count: 0.105, size: 1.75, extra: { scanMul: 4.335, dimBase: 0.45 } } },
+      rubik: { 64: { speed: 1.82, count: 0.35, size: 1.05 }, 20: { speed: 1.95, count: 0.088, size: 1.9 } },
+      wave: { 64: { speed: 4.388, count: 0.341, size: 1 }, 20: { speed: 3.998, count: 0.105, size: 1.6 } },
+      web: { 64: { speed: 3.315, count: 1.35, size: 0.95 }, 20: { speed: 6.63, count: 0.25, size: 1.52 } },
+      braid: { 64: { speed: 1.625, count: 0.5, size: 1 }, 20: { speed: 2.75, count: 0.1125, size: 1.36 } },
+      ribbon: { 64: { speed: 2.34, count: 0.25, size: 0.85, extra: { spin: 0, bandMul: 3.9, wobMul: 1 } }, 20: { speed: 3.12, count: 0.051, size: 1.073, extra: { spin: 0, bandMul: 4.94, wobMul: 1 } } },
+      ring: { 64: { speed: 3.24, count: 0.25, size: 0.956, extra: { spin: 0, bandMul: 3.627, wobMul: 0.368 } }, 20: { speed: 3.78, count: 0.028, size: 1.622, extra: { spin: 0, bandMul: 3.968, wobMul: 0.565 } } },
+      morph: { 64: { speed: 2.405, count: 0.702, size: 0.395, extra: { spread: 1.45 } }, 20: { speed: 2.08, count: 0.53, size: 1.011, extra: { spread: 1.45 } } }
+    }, tt = new Map();
+    function Lt(n, s) {
+      const t = `${n}-${s}`, r = tt.get(t);
+      if (r) return r;
+      const a = Ot[n], o = At[a][s];
+      let c = { ...Et[a] };
+      o.count !== 1 && (c = St(c, o.count)), o.size !== 1 && (c = Bt(c, o.size)), o.extra && (c = { ...c, ...o.extra });
+      const M = { mode: a, speed: o.speed, opts: c };
+      return tt.set(t, M), M;
+    }
+
+    window.ThinkingOrbsEngine = {
+      MODE_DRAWS: Ct,
+      MODE_FRAMES: vt,
+      STATE_TO_MODE: Ot,
+      resolvePreset: Lt,
+      paintFrame: ht,
+      finalizeFrame: L,
+      paint: rt
+    };
+  </script>
+
+  <!-- AUTHENTIC OPTICAL ENGINE JAVASCRIPT & PALETTE DRIVER -->
+  <script>
+    (function() {
+      // 1. PALETTE DEFINITIONS (from styles.ts)
+      const PALETTES = {
+        ocean: {
+          primary: 'rgb(60, 120, 255)',
+          secondary: 'rgb(120, 80, 255)',
+          hairlineGradients: [
+            'radial-gradient(ellipse 70px 40px at 33% -7.4%, rgb(100, 80, 220), transparent)',
+            'radial-gradient(ellipse 60px 35px at 12% -5%, rgb(60, 120, 255), transparent)',
+            'radial-gradient(ellipse 40px 70px at 2.1% 68.3%, rgb(80, 100, 200), transparent)',
+            'radial-gradient(ellipse 20px 35px at 2.1% 68.3%, rgb(50, 140, 220), transparent)',
+            'radial-gradient(ellipse 180px 32px at 74.4% 100%, rgb(120, 80, 255), transparent)',
+            'radial-gradient(ellipse 85px 26px at 55% 100%, rgb(70, 130, 255), transparent)',
+            'radial-gradient(ellipse 74px 32px at 93.9% 0%, rgb(140, 100, 240), transparent)',
+            'radial-gradient(ellipse 26px 42px at 100% 27.1%, rgb(90, 110, 230), transparent)',
+            'radial-gradient(ellipse 52px 48px at 100% 27.1%, rgb(130, 70, 255), transparent)'
+          ].join(', '),
+          innerGradients: [
+            'radial-gradient(ellipse 63px 36px at 33% -7.4%, rgba(100, 80, 220, 0.45), transparent)',
+            'radial-gradient(ellipse 54px 32px at 12% -5%, rgba(60, 120, 255, 0.45), transparent)',
+            'radial-gradient(ellipse 36px 63px at 2.1% 68.3%, rgba(80, 100, 200, 0.45), transparent)',
+            'radial-gradient(ellipse 162px 29px at 74.4% 100%, rgba(120, 80, 255, 0.45), transparent)',
+            'radial-gradient(ellipse 77px 23px at 55% 100%, rgba(70, 130, 255, 0.45), transparent)',
+            'radial-gradient(ellipse 47px 43px at 100% 27.1%, rgba(130, 70, 255, 0.45), transparent)'
+          ].join(', '),
+          smGradients: [
+            'radial-gradient(ellipse 9px 18px at 2% 68%, rgb(60, 140, 200), transparent)',
+            'radial-gradient(ellipse 59px 9px at 72% -3%, rgb(100, 80, 220), transparent)',
+            'radial-gradient(ellipse 42px 7px at 74% 100%, rgb(80, 100, 255), transparent)',
+            'radial-gradient(ellipse 10px 17px at 100% 27%, rgb(120, 70, 240), transparent)',
+            'radial-gradient(ellipse 11px 12px at 100% 27%, rgb(110, 90, 230), transparent)'
+          ].join(', '),
+          bloomSpikes: [
+            'radial-gradient(ellipse 28px 80px at 25% 100%, rgba(100, 80, 255, 0.8), transparent 80%)',
+            'radial-gradient(ellipse 40px 90px at 75% 100%, rgba(60, 120, 255, 0.85), transparent 80%)',
+            'radial-gradient(ellipse 55px 70px at 50% 100%, rgba(120, 80, 255, 0.75), transparent 75%)'
+          ].join(', '),
+          auroraSpikes: [
+            'rgb(60, 120, 255)',
+            'rgba(160, 60, 255, 0.9)',
+            'rgba(30, 230, 160, 0.9)',
+            'rgb(120, 80, 255)',
+            'rgba(60, 220, 255, 0.95)',
+            'rgb(60, 120, 255)',
+            'rgba(255, 180, 50, 0.8)'
+          ]
+        },
+        sunset: {
+          primary: 'rgb(255, 140, 50)',
+          secondary: 'rgb(255, 80, 80)',
+          hairlineGradients: [
+            'radial-gradient(ellipse 70px 40px at 33% -7.4%, rgb(255, 80, 50), transparent)',
+            'radial-gradient(ellipse 60px 35px at 12% -5%, rgb(255, 160, 40), transparent)',
+            'radial-gradient(ellipse 40px 70px at 2.1% 68.3%, rgb(255, 120, 60), transparent)',
+            'radial-gradient(ellipse 20px 35px at 2.1% 68.3%, rgb(255, 200, 50), transparent)',
+            'radial-gradient(ellipse 180px 32px at 74.4% 100%, rgb(255, 100, 80), transparent)',
+            'radial-gradient(ellipse 85px 26px at 55% 100%, rgb(255, 180, 60), transparent)',
+            'radial-gradient(ellipse 74px 32px at 93.9% 0%, rgb(255, 60, 60), transparent)',
+            'radial-gradient(ellipse 26px 42px at 100% 27.1%, rgb(255, 140, 50), transparent)',
+            'radial-gradient(ellipse 52px 48px at 100% 27.1%, rgb(255, 90, 70), transparent)'
+          ].join(', '),
+          innerGradients: [
+            'radial-gradient(ellipse 63px 36px at 33% -7.4%, rgba(255, 80, 50, 0.45), transparent)',
+            'radial-gradient(ellipse 54px 32px at 12% -5%, rgba(255, 160, 40, 0.45), transparent)',
+            'radial-gradient(ellipse 36px 63px at 2.1% 68.3%, rgba(255, 120, 60, 0.45), transparent)',
+            'radial-gradient(ellipse 162px 29px at 74.4% 100%, rgba(255, 100, 80, 0.45), transparent)',
+            'radial-gradient(ellipse 77px 23px at 55% 100%, rgba(255, 180, 60, 0.45), transparent)',
+            'radial-gradient(ellipse 47px 43px at 100% 27.1%, rgba(255, 90, 70, 0.45), transparent)'
+          ].join(', '),
+          smGradients: [
+            'radial-gradient(ellipse 9px 18px at 2% 68%, rgb(255, 180, 50), transparent)',
+            'radial-gradient(ellipse 59px 9px at 72% -3%, rgb(255, 80, 60), transparent)',
+            'radial-gradient(ellipse 42px 7px at 74% 100%, rgb(255, 100, 80), transparent)',
+            'radial-gradient(ellipse 10px 17px at 100% 27%, rgb(255, 60, 80), transparent)',
+            'radial-gradient(ellipse 11px 12px at 100% 27%, rgb(255, 200, 50), transparent)'
+          ].join(', '),
+          bloomSpikes: [
+            'radial-gradient(ellipse 28px 80px at 25% 100%, rgba(255, 100, 80, 0.8), transparent 80%)',
+            'radial-gradient(ellipse 40px 90px at 75% 100%, rgba(255, 180, 50, 0.85), transparent 80%)',
+            'radial-gradient(ellipse 55px 70px at 50% 100%, rgba(255, 140, 70, 0.75), transparent 75%)'
+          ].join(', '),
+          auroraSpikes: [
+            'rgb(255, 100, 80)',
+            'rgba(255, 60, 120, 0.9)',
+            'rgba(255, 200, 50, 0.9)',
+            'rgb(255, 140, 50)',
+            'rgba(255, 180, 70, 0.95)',
+            'rgb(255, 80, 60)',
+            'rgba(255, 220, 100, 0.8)'
+          ]
+        }
+      };
+
+      // 2. STATE
+      let currentPalette = 'ocean';
+      let currentSpeed = 6.0;
+      let currentStrength = 0.9;
+
+      // 3. COMPILE AND INJECT DYNAMIC ENGINE STYLES
+      function updateEngineStyles() {
+        const pal = PALETTES[currentPalette];
+        const dur = currentSpeed + 's';
+        const str = currentStrength;
+
+        const css = `
+          /* SHARED KEYFRAMES */
+          @property --beam-angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+          }
+          @keyframes beam-travel-rotate {
+            0% { --beam-angle: 0deg; }
+            100% { --beam-angle: 360deg; }
+          }
+          @keyframes beam-line-sweep {
+            0% { --line-x: 0.15; opacity: 0.7; }
+            50% { --line-x: 0.85; opacity: 1; }
+            100% { --line-x: 0.15; opacity: 0.7; }
+          }
+          @keyframes beam-travel-sm {
+            0% { filter: hue-rotate(0deg) saturate(1.2); }
+            50% { filter: hue-rotate(20deg) saturate(1.4); }
+            100% { filter: hue-rotate(0deg) saturate(1.2); }
+          }
+
+          /* PRESET 1 - OPTION A: SHIMMER SWEEP (AUTHENTIC TRAVELING GRADIENT CLUSTER) */
+          .beam-engine-shimmer-sweep {
+            position: relative;
+            border-radius: 12px;
+          }
+          .beam-engine-shimmer-sweep::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            padding: 1.5px;
+            background:
+              radial-gradient(ellipse 12px 10px at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, rgba(255,255,255,0.9) 0%, transparent 65%),
+              ${pal.hairlineGradients};
+            -webkit-mask:
+              radial-gradient(ellipse 85px 45px at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, #fff 0%, rgba(255,255,255,0.6) 45%, transparent 100%),
+              linear-gradient(#fff 0 0) content-box,
+              linear-gradient(#fff 0 0);
+            -webkit-mask-composite: source-in, xor;
+            mask:
+              radial-gradient(ellipse 85px 45px at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, #fff 0%, rgba(255,255,255,0.6) 45%, transparent 100%),
+              linear-gradient(#fff 0 0) content-box,
+              linear-gradient(#fff 0 0);
+            mask-composite: intersect, exclude;
+            opacity: ${str * 0.98};
+            z-index: 2;
+          }
+          .beam-engine-shimmer-sweep::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: ${pal.innerGradients};
+            box-shadow: inset 0 0 10px 1px rgba(0,0,0,0.6);
+            -webkit-mask:
+              radial-gradient(ellipse 80px 48px at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, #fff 0%, rgba(255,255,255,0.5) 45%, transparent 100%),
+              linear-gradient(#fff 0 0);
+            -webkit-mask-composite: source-in;
+            mask:
+              radial-gradient(ellipse 80px 48px at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, #fff 0%, rgba(255,255,255,0.5) 45%, transparent 100%),
+              linear-gradient(#fff 0 0);
+            mask-composite: intersect;
+            opacity: ${str * 0.75};
+            z-index: 1;
+          }
+          .beam-bloom-shimmer-sweep {
+            position: absolute;
+            inset: -12px;
+            pointer-events: none;
+            border-radius: inherit;
+            background:
+              radial-gradient(ellipse calc(1.2px * var(--beam-spike, 1)) calc(92px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100% - 42px) calc(100% - 2px), ${pal.auroraSpikes[0]}, transparent 88%),
+              radial-gradient(ellipse calc(10px * var(--beam-spike2, 1)) calc(35px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100% - 28px) calc(100% - 4px), ${pal.auroraSpikes[1]}, transparent 95%),
+              radial-gradient(ellipse calc(2px * (2 - var(--beam-spike, 1))) calc(72px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100% - 14px) calc(100% - 3px), ${pal.auroraSpikes[2]}, transparent 90%),
+              radial-gradient(ellipse calc(14px * var(--beam-spike2, 1)) calc(28px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100%) calc(100% - 2px), ${pal.auroraSpikes[3]}, transparent 96%),
+              radial-gradient(ellipse calc(1.5px * (2 - var(--beam-spike2, 1))) calc(85px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100% + 14px) calc(100% - 4px), ${pal.auroraSpikes[4]}, transparent 89%),
+              radial-gradient(ellipse calc(7px * var(--beam-spike, 1)) calc(45px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100% + 28px) calc(100% - 2px), ${pal.auroraSpikes[5]}, transparent 94%),
+              radial-gradient(ellipse calc(0.8px * (2 - var(--beam-spike, 1))) calc(60px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100% + 42px) calc(100% - 3px), ${pal.auroraSpikes[6]}, transparent 91%),
+              radial-gradient(ellipse calc(21px * var(--beam-spike, 1)) calc(15px * var(--beam-spike2, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100%) calc(100% + 1px), rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.5) 40%, transparent 100%),
+              radial-gradient(ellipse calc(45px * var(--beam-w, 1)) calc(42px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, ${pal.auroraSpikes[0]} 0%, transparent 80%);
+            -webkit-mask: radial-gradient(ellipse calc(90px * var(--beam-w, 1)) calc(115px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, #fff 0%, rgba(255,255,255,0.6) 40%, transparent 100%);
+            mask: radial-gradient(ellipse calc(90px * var(--beam-w, 1)) calc(115px * var(--beam-h, 1)) at calc(var(--shimmer-sweep-x, 0.5) * 100%) 100%, #fff 0%, rgba(255,255,255,0.6) 40%, transparent 100%);
+            filter: blur(5px);
+            opacity: ${str * 0.95};
+            z-index: 0;
+          }
+
+          /* PRESET 1 - OPTION B: SHIMMER LOOP (360° PERIMETER TRAVELING CLUSTER) */
+          .beam-engine-shimmer-loop {
+            position: relative;
+            border-radius: 16px;
+          }
+          .beam-engine-shimmer-loop::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            padding: 1.5px;
+            background:
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 24px + var(--shimmer-axis-n, 0) * 28px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 24px + var(--shimmer-axis-t, 1) * 28px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.3) 35%, transparent 65%),
+              ${pal.hairlineGradients};
+            -webkit-mask:
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 85px + var(--shimmer-axis-n, 0) * 95px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 85px + var(--shimmer-axis-t, 1) * 95px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), #fff 0%, rgba(255,255,255,0.6) 45%, transparent 100%),
+              linear-gradient(#fff 0 0) content-box,
+              linear-gradient(#fff 0 0);
+            -webkit-mask-composite: source-in, xor;
+            mask:
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 85px + var(--shimmer-axis-n, 0) * 95px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 85px + var(--shimmer-axis-t, 1) * 95px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), #fff 0%, rgba(255,255,255,0.6) 45%, transparent 100%),
+              linear-gradient(#fff 0 0) content-box,
+              linear-gradient(#fff 0 0);
+            mask-composite: intersect, exclude;
+            opacity: ${str * 0.98};
+            z-index: 2;
+          }
+          .beam-engine-shimmer-loop::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: ${pal.innerGradients};
+            box-shadow: inset 0 0 10px 1px rgba(0,0,0,0.6);
+            -webkit-mask:
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 80px + var(--shimmer-axis-n, 0) * 90px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 80px + var(--shimmer-axis-t, 1) * 90px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), #fff 0%, rgba(255,255,255,0.5) 45%, transparent 100%),
+              linear-gradient(#fff 0 0);
+            -webkit-mask-composite: source-in;
+            mask:
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 80px + var(--shimmer-axis-n, 0) * 90px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 80px + var(--shimmer-axis-t, 1) * 90px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), #fff 0%, rgba(255,255,255,0.5) 45%, transparent 100%),
+              linear-gradient(#fff 0 0);
+            mask-composite: intersect;
+            opacity: ${str * 0.75};
+            z-index: 1;
+          }
+          .beam-bloom-shimmer-loop {
+            position: absolute;
+            inset: -12px;
+            pointer-events: none;
+            border-radius: inherit;
+            background:
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 1.2px + var(--shimmer-axis-n, 0) * 92px) * var(--beam-spike, 1)) calc((var(--shimmer-axis-n, 0) * 1.2px + var(--shimmer-axis-t, 1) * 92px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100% - calc(var(--shimmer-loop-ox, 1) * 42px) - calc(var(--shimmer-loop-nx, 0) * 2px)) calc(var(--shimmer-loop-y, 1) * 100% - calc(var(--shimmer-loop-oy, 0) * 42px) - calc(var(--shimmer-loop-ny, 1) * 2px)), ${pal.auroraSpikes[0]}, transparent 88%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 10px + var(--shimmer-axis-n, 0) * 35px) * var(--beam-spike2, 1)) calc((var(--shimmer-axis-n, 0) * 10px + var(--shimmer-axis-t, 1) * 35px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100% - calc(var(--shimmer-loop-ox, 1) * 28px) - calc(var(--shimmer-loop-nx, 0) * 4px)) calc(var(--shimmer-loop-y, 1) * 100% - calc(var(--shimmer-loop-oy, 0) * 28px) - calc(var(--shimmer-loop-ny, 1) * 4px)), ${pal.auroraSpikes[1]}, transparent 95%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 2px + var(--shimmer-axis-n, 0) * 72px) * (2 - var(--beam-spike, 1))) calc((var(--shimmer-axis-n, 0) * 2px + var(--shimmer-axis-t, 1) * 72px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100% - calc(var(--shimmer-loop-ox, 1) * 14px) - calc(var(--shimmer-loop-nx, 0) * 3px)) calc(var(--shimmer-loop-y, 1) * 100% - calc(var(--shimmer-loop-oy, 0) * 14px) - calc(var(--shimmer-loop-ny, 1) * 3px)), ${pal.auroraSpikes[2]}, transparent 90%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 14px + var(--shimmer-axis-n, 0) * 28px) * var(--beam-spike2, 1)) calc((var(--shimmer-axis-n, 0) * 14px + var(--shimmer-axis-t, 1) * 28px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100% - calc(var(--shimmer-loop-nx, 0) * 2px)) calc(var(--shimmer-loop-y, 1) * 100% - calc(var(--shimmer-loop-ny, 1) * 2px)), ${pal.auroraSpikes[3]}, transparent 96%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 1.5px + var(--shimmer-axis-n, 0) * 85px) * (2 - var(--beam-spike2, 1))) calc((var(--shimmer-axis-n, 0) * 1.5px + var(--shimmer-axis-t, 1) * 85px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100% + calc(var(--shimmer-loop-ox, 1) * 14px) - calc(var(--shimmer-loop-nx, 0) * 4px)) calc(var(--shimmer-loop-y, 1) * 100% + calc(var(--shimmer-loop-oy, 0) * 14px) - calc(var(--shimmer-loop-ny, 1) * 4px)), ${pal.auroraSpikes[4]}, transparent 89%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 7px + var(--shimmer-axis-n, 0) * 45px) * var(--beam-spike, 1)) calc((var(--shimmer-axis-n, 0) * 7px + var(--shimmer-axis-t, 1) * 45px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100% + calc(var(--shimmer-loop-ox, 1) * 28px) - calc(var(--shimmer-loop-nx, 0) * 2px)) calc(var(--shimmer-loop-y, 1) * 100% + calc(var(--shimmer-loop-oy, 0) * 28px) - calc(var(--shimmer-loop-ny, 1) * 2px)), ${pal.auroraSpikes[5]}, transparent 94%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 0.8px + var(--shimmer-axis-n, 0) * 60px) * (2 - var(--beam-spike, 1))) calc((var(--shimmer-axis-n, 0) * 0.8px + var(--shimmer-axis-t, 1) * 60px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100% + calc(var(--shimmer-loop-ox, 1) * 42px) - calc(var(--shimmer-loop-nx, 0) * 3px)) calc(var(--shimmer-loop-y, 1) * 100% + calc(var(--shimmer-loop-oy, 0) * 42px) - calc(var(--shimmer-loop-ny, 1) * 3px)), ${pal.auroraSpikes[6]}, transparent 91%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 21px + var(--shimmer-axis-n, 0) * 15px) * var(--beam-spike, 1)) calc((var(--shimmer-axis-n, 0) * 21px + var(--shimmer-axis-t, 1) * 15px) * var(--beam-spike2, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.5) 40%, transparent 100%),
+              radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 45px + var(--shimmer-axis-n, 0) * 42px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 45px + var(--shimmer-axis-t, 1) * 42px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), ${pal.auroraSpikes[0]} 0%, transparent 80%);
+            -webkit-mask: radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 95px + var(--shimmer-axis-n, 0) * 115px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 95px + var(--shimmer-axis-t, 1) * 115px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), #fff 0%, rgba(255,255,255,0.6) 40%, transparent 100%);
+            mask: radial-gradient(ellipse calc((var(--shimmer-axis-t, 1) * 95px + var(--shimmer-axis-n, 0) * 115px) * var(--beam-w, 1)) calc((var(--shimmer-axis-n, 0) * 95px + var(--shimmer-axis-t, 1) * 115px) * var(--beam-h, 1)) at calc(var(--shimmer-loop-x, 0.5) * 100%) calc(var(--shimmer-loop-y, 1) * 100%), #fff 0%, rgba(255,255,255,0.6) 40%, transparent 100%);
+            filter: blur(5px);
+            opacity: ${str * 0.95};
+            z-index: 0;
+          }
+
+          /* PRESET 1 (LEGACY): FULL PERIMETER TRAVELING LINE BEAM (conic-gradient laser) */
+          .beam-engine-travel-line {
+            position: relative;
+          }
+          .beam-engine-travel-line::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            padding: 1.5px;
+            background: conic-gradient(
+              from var(--beam-angle, 0deg) at 50% 50%,
+              transparent 0deg,
+              transparent 270deg,
+              ${pal.secondary} 305deg,
+              ${pal.primary} 345deg,
+              #ffffff 360deg
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: ${str * 0.95};
+            z-index: 2;
+            animation: beam-travel-rotate ${dur} linear infinite;
+          }
+          .beam-engine-travel-line::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(ellipse at 50% 50%, ${pal.primary} 0%, transparent 75%);
+            opacity: ${str * 0.18};
+            z-index: 1;
+          }
+          .beam-bloom-travel-line {
+            position: absolute;
+            inset: -6px;
+            border-radius: inherit;
+            pointer-events: none;
+            background: conic-gradient(
+              from var(--beam-angle, 0deg) at 50% 50%,
+              transparent 0deg,
+              transparent 290deg,
+              ${pal.primary} 345deg,
+              transparent 360deg
+            );
+            filter: blur(14px);
+            opacity: ${str * 0.6};
+            z-index: 0;
+            animation: beam-travel-rotate ${dur} linear infinite;
+          }
+
+          /* PRESET 1 (LEGACY): BACK & FORTH PING-PONG LINE BEAM */
+          .beam-engine-pingpong-line {
+            position: relative;
+          }
+          .beam-engine-pingpong-line::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            padding: 1.5px;
+            background: radial-gradient(
+              ellipse 130px 45px at var(--pingpong-x, 50%) 50%,
+              #ffffff 0%,
+              ${pal.primary} 30%,
+              ${pal.secondary} 65%,
+              transparent 85%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: ${str * 0.95};
+            z-index: 2;
+          }
+          .beam-engine-pingpong-line::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(ellipse 110px 35px at var(--pingpong-x, 50%) 50%, ${pal.primary} 0%, transparent 75%);
+            opacity: ${str * 0.22};
+            z-index: 1;
+          }
+          .beam-bloom-pingpong-line {
+            position: absolute;
+            inset: -6px;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(
+              ellipse 150px 40px at var(--pingpong-x, 50%) 50%,
+              ${pal.primary} 0%,
+              transparent 75%
+            );
+            filter: blur(12px);
+            opacity: ${str * 0.65};
+            z-index: 0;
+          }
+
+          /* PRESET 2: FULL CIRCLE ORBIT BEAM */
+          .beam-engine-circle {
+            position: relative;
+            border-radius: 50%;
+          }
+          .beam-engine-circle::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 50%;
+            pointer-events: none;
+            padding: 1.5px;
+            background: conic-gradient(
+              from var(--beam-angle, 0deg) at 50% 50%,
+              transparent 0deg,
+              transparent 270deg,
+              ${pal.secondary} 305deg,
+              ${pal.primary} 345deg,
+              #ffffff 360deg
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: ${str * 0.95};
+            z-index: 2;
+            animation: beam-travel-rotate ${dur} linear infinite;
+          }
+          .beam-engine-circle::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%, ${pal.primary} 0%, transparent 70%);
+            opacity: ${str * 0.22};
+            z-index: 1;
+          }
+          .beam-bloom-circle {
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: conic-gradient(
+              from var(--beam-angle, 0deg) at 50% 50%,
+              transparent 0deg,
+              transparent 290deg,
+              ${pal.primary} 345deg,
+              transparent 360deg
+            );
+            filter: blur(14px);
+            opacity: ${str * 0.55};
+            z-index: 0;
+            animation: beam-travel-rotate ${dur} linear infinite;
+          }
+
+          /* PRESET 3: BOUNDARY EDGE RIM SHIMMER (ACTIVE GLIDING TOP EDGE) */
+          .beam-engine-edge-shimmer {
+            position: relative;
+            overflow: visible;
+          }
+          .beam-engine-edge-shimmer::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(
+              90deg,
+              transparent 0%,
+              transparent calc(var(--pingpong-x, 50%) - 20%),
+              ${pal.secondary} calc(var(--pingpong-x, 50%) - 10%),
+              #ffffff var(--pingpong-x, 50%),
+              ${pal.primary} calc(var(--pingpong-x, 50%) + 10%),
+              transparent calc(var(--pingpong-x, 50%) + 20%),
+              transparent 100%
+            );
+            opacity: ${str * 0.98};
+            z-index: 2;
+          }
+          .beam-bloom-edge-shimmer {
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 16px;
+            pointer-events: none;
+            background: radial-gradient(
+              ellipse 120px 10px at var(--pingpong-x, 50%) 50%,
+              ${pal.primary} 0%,
+              ${pal.secondary} 40%,
+              transparent 75%
+            );
+            filter: blur(10px);
+            opacity: ${str * 0.85};
+            z-index: 0;
+          }
+
+          /* PRESET 3B: HORIZONTAL DIVIDER SHIMMER LINE */
+          .beam-divider-shimmer {
+            position: relative;
+            height: 2px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+          }
+          .beam-divider-shimmer::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(
+              90deg,
+              transparent 0%,
+              transparent calc(var(--pingpong-x, 50%) - 18%),
+              ${pal.secondary} calc(var(--pingpong-x, 50%) - 8%),
+              #ffffff var(--pingpong-x, 50%),
+              ${pal.primary} calc(var(--pingpong-x, 50%) + 8%),
+              transparent calc(var(--pingpong-x, 50%) + 18%),
+              transparent 100%
+            );
+            opacity: ${str * 0.95};
+            z-index: 2;
+          }
+          .beam-divider-bloom {
+            position: absolute;
+            top: -6px;
+            left: 0;
+            right: 0;
+            height: 14px;
+            pointer-events: none;
+            background: radial-gradient(
+              ellipse 100px 8px at var(--pingpong-x, 50%) 50%,
+              ${pal.primary} 0%,
+              transparent 75%
+            );
+            filter: blur(8px);
+            opacity: ${str * 0.75};
+            z-index: 0;
+          }
+
+          /* PRESET 3 (LEGACY FALLBACK) */
+          .beam-engine-line {
+            position: relative;
+          }
+          .beam-engine-line::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            padding: 1px;
+            background: ${pal.hairlineGradients};
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: ${str * 0.95};
+            z-index: 2;
+          }
+          .beam-engine-line::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: ${pal.innerGradients};
+            opacity: ${str * 0.55};
+            z-index: 1;
+          }
+          .beam-bloom-line {
+            position: absolute;
+            inset: -4px;
+            pointer-events: none;
+            background: ${pal.bloomSpikes};
+            filter: blur(14px);
+            opacity: ${str * 0.65};
+            z-index: 0;
+            border-radius: inherit;
+          }
+
+          /* PRESET 4: PULSE OUTSIDE (AURORA HALO) WITH OPAQUE CARD OCCLUSION */
+          .beam-engine-pulse-outside {
+            position: relative;
+            background: #0a0e18; /* Solid opaque card body blocks inner glow */
+            border-radius: 1rem;
+            z-index: 1;
+          }
+          .beam-engine-pulse-outside::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            pointer-events: none;
+            padding: 1px;
+            background: ${pal.hairlineGradients};
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: ${str * 0.85};
+            z-index: 2;
+          }
+          .beam-engine-pulse-outside::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: ${pal.innerGradients};
+            opacity: ${str * 0.35};
+            z-index: 1;
+          }
+          .beam-bloom-pulse-outside {
+            position: absolute;
+            inset: -28px;
+            pointer-events: none;
+            background: radial-gradient(circle at var(--pulse-x, 50%) var(--pulse-y, 50%), ${pal.primary} 0%, ${pal.secondary} 35%, transparent 70%);
+            filter: blur(28px);
+            opacity: calc(${str} * var(--pulse-opacity, 0.75));
+            transform: scale(var(--pulse-scale, 1.0));
+            z-index: -1; /* Layered strictly behind the solid card body so interior stays clear! */
+            border-radius: inherit;
+          }
+
+          /* PRESET 5: SM ACTION PILL */
+          .beam-engine-sm {
+            position: relative;
+          }
+          .beam-engine-sm::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 9999px;
+            pointer-events: none;
+            padding: 1px;
+            background: ${pal.smGradients};
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: ${str * 0.9};
+            z-index: 2;
+            animation: beam-travel-sm ${dur} ease-in-out infinite;
+          }
+          .beam-engine-sm::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            pointer-events: none;
+            background: ${pal.innerGradients};
+            opacity: ${str * 0.35};
+            z-index: 1;
+          }
+          .beam-bloom-sm {
+            position: absolute;
+            inset: -6px;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%, ${pal.primary} 0%, transparent 70%);
+            filter: blur(10px);
+            opacity: ${str * 0.45};
+            z-index: 0;
+            border-radius: 9999px;
+          }
+
+          /* PRESET 6: PULSE INNER */
+          .beam-engine-pulse-inner {
+            position: relative;
+            overflow: hidden;
+          }
+          .beam-engine-pulse-inner::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            padding: 1px;
+            background: ${pal.hairlineGradients};
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: ${str * 0.75};
+            z-index: 2;
+          }
+          .beam-engine-pulse-inner::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: ${pal.innerGradients};
+            opacity: calc(${str} * var(--pulse-inner-opacity, 0.45));
+            transform: scale(var(--pulse-inner-scale, 0.99));
+            z-index: 1;
+          }
+        `;
+        document.getElementById('beam-engine-styles').textContent = css;
+      }
+
+      // 4. PULSE DRIVER (Shared ~30fps rAF loop from pulseDriver.ts)
+      let phase = 0;
+      let beamAngleDeg = 0;
+      function pulseTick() {
+        phase += (0.016 / currentSpeed) * Math.PI * 2;
+        const pingPong = (1 - Math.cos(phase)) / 2;
+
+        beamAngleDeg = (beamAngleDeg + (360 * 0.016 / currentSpeed)) % 360;
+        document.documentElement.style.setProperty('--beam-angle', beamAngleDeg.toFixed(1) + 'deg');
+
+        const pingPongX = 5 + (90 * pingPong);
+        document.documentElement.style.setProperty('--pingpong-x', pingPongX.toFixed(1) + '%');
+
+        const scale = 0.96 + (0.10 * pingPong);
+        const opacity = 0.55 + (0.35 * pingPong);
+        const posX = 45 + (10 * Math.sin(phase * 0.7));
+        const posY = 50 + (8 * Math.cos(phase * 0.5));
+
+        const innerScale = 0.98 + (0.03 * pingPong);
+        const innerOpacity = 0.35 + (0.45 * pingPong);
+
+        document.documentElement.style.setProperty('--pulse-scale', scale.toFixed(3));
+        document.documentElement.style.setProperty('--pulse-opacity', opacity.toFixed(3));
+        document.documentElement.style.setProperty('--pulse-x', posX.toFixed(1) + '%');
+        document.documentElement.style.setProperty('--pulse-y', posY.toFixed(1) + '%');
+        document.documentElement.style.setProperty('--pulse-inner-scale', innerScale.toFixed(3));
+        document.documentElement.style.setProperty('--pulse-inner-opacity', innerOpacity.toFixed(3));
+
+        // SHIMMER SWEEP: back-and-forth along bottom edge (0.06 → 0.94 → 0.06)
+        const sweepT = (1 - Math.cos(phase * 0.7)) / 2; // slower, smoother
+        const sweepX = 0.06 + 0.88 * sweepT;
+        document.documentElement.style.setProperty('--shimmer-sweep-x', sweepX.toFixed(4));
+
+        // Northern Lights Shimmer flicker oscillators (anti-phase frequency desync)
+        const spike1 = 0.8 + 0.5 * Math.sin(phase * 2.1);
+        const spike2 = 0.8 + 0.5 * Math.cos(phase * 2.7);
+        const breatheH = 0.85 + 0.35 * Math.sin(phase * 1.5);
+        const breatheW = 1.25 - 0.35 * Math.sin(phase * 1.5);
+        document.documentElement.style.setProperty('--beam-spike', spike1.toFixed(3));
+        document.documentElement.style.setProperty('--beam-spike2', spike2.toFixed(3));
+        document.documentElement.style.setProperty('--beam-h', breatheH.toFixed(3));
+        document.documentElement.style.setProperty('--beam-w', breatheW.toFixed(3));
+
+        // SHIMMER LOOP: trace the perimeter (bottom→right→top→left→bottom)
+        const loopPhase = ((phase * 0.35) % (Math.PI * 2)) / (Math.PI * 2); // 0..1 normalized
+        let loopX, loopY, loopOx, loopOy, loopNx, loopNy, axisT, axisN;
+        if (loopPhase < 0.34) {
+          // bottom edge: left→right, y=1
+          const t = loopPhase / 0.34;
+          loopX = t; loopY = 1; loopOx = 1; loopOy = 0; loopNx = 0; loopNy = 1; axisT = 1; axisN = 0;
+        } else if (loopPhase < 0.50) {
+          // right edge: bottom→top, x=1
+          const t = (loopPhase - 0.34) / 0.16;
+          loopX = 1; loopY = 1 - t; loopOx = 0; loopOy = -1; loopNx = 1; loopNy = 0; axisT = 0; axisN = 1;
+        } else if (loopPhase < 0.84) {
+          // top edge: right→left, y=0
+          const t = (loopPhase - 0.50) / 0.34;
+          loopX = 1 - t; loopY = 0; loopOx = -1; loopOy = 0; loopNx = 0; loopNy = -1; axisT = 1; axisN = 0;
+        } else {
+          // left edge: top→bottom, x=0
+          const t = (loopPhase - 0.84) / 0.16;
+          loopX = 0; loopY = t; loopOx = 0; loopOy = 1; loopNx = -1; loopNy = 0; axisT = 0; axisN = 1;
+        }
+        document.documentElement.style.setProperty('--shimmer-loop-x', loopX.toFixed(4));
+        document.documentElement.style.setProperty('--shimmer-loop-y', loopY.toFixed(4));
+        document.documentElement.style.setProperty('--shimmer-loop-ox', loopOx.toString());
+        document.documentElement.style.setProperty('--shimmer-loop-oy', loopOy.toString());
+        document.documentElement.style.setProperty('--shimmer-loop-nx', loopNx.toString());
+        document.documentElement.style.setProperty('--shimmer-loop-ny', loopNy.toString());
+        document.documentElement.style.setProperty('--shimmer-axis-t', axisT.toString());
+        document.documentElement.style.setProperty('--shimmer-axis-n', axisN.toString());
+
+        requestAnimationFrame(pulseTick);
+      }
+
+      // 5. EVENT BINDINGS FOR LIVE OPTICAL BEAM CONTROLS
+      const btnOcean = document.getElementById('btn-palette-ocean');
+      const btnSunset = document.getElementById('btn-palette-sunset');
+      const selectSpeed = document.getElementById('select-speed');
+      const rangeStrength = document.getElementById('range-strength');
+      const strengthLabel = document.getElementById('strength-label');
+
+      btnOcean.addEventListener('click', () => {
+        currentPalette = 'ocean';
+        btnOcean.className = "px-2.5 py-1 rounded-md font-medium text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 transition-all";
+        btnSunset.className = "px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white transition-all";
+        updateEngineStyles();
+      });
+
+      btnSunset.addEventListener('click', () => {
+        currentPalette = 'sunset';
+        btnSunset.className = "px-2.5 py-1 rounded-md font-medium text-amber-300 bg-amber-950/80 border border-amber-500/40 transition-all";
+        btnOcean.className = "px-2.5 py-1 rounded-md font-medium text-slate-400 hover:text-white transition-all";
+        updateEngineStyles();
+      });
+
+      selectSpeed.addEventListener('change', (e) => {
+        currentSpeed = parseFloat(e.target.value);
+        updateEngineStyles();
+      });
+
+      rangeStrength.addEventListener('input', (e) => {
+        currentStrength = parseInt(e.target.value) / 100;
+        strengthLabel.textContent = e.target.value + '%';
+        updateEngineStyles();
+      });
+
+      // INITIALIZE BEAM ENGINE
+      updateEngineStyles();
+      pulseTick();
+    })();
+  </script>
+
+  <!-- AUTHENTIC AI REASONING / THINKING ORBS STUDIO SCRIPT -->
+  <script>
+    (function() {
+      const STATES = [
+        { state: 'solving', label: "🎲 Rubik's Cube (Solving)", blurb: '3D bands scramble, rotate across orthogonal axes, then click back into alignment', mode: 'rubik', chat: 'Synthesizing verified solution...', isFavorite: true },
+        { state: 'working', label: 'Orbits (Working)', blurb: 'particles on tilted orbital planes around central core', mode: 'orbits', chat: 'Executing background plan...', isFavorite: false },
+        { state: 'searching', label: 'Globe (Searching)', blurb: 'scan meridian sweeps dotted 3D globe', mode: 'globe', chat: 'Scanning repository & documents...', isFavorite: false },
+        { state: 'listening', label: 'Wave (Listening)', blurb: 'harmonic waveform rolls through concentric rings', mode: 'wave', chat: 'Analyzing multimodal input...', isFavorite: false },
+        { state: 'connecting', label: '✨ Constellation (Connecting)', blurb: 'dynamic neural constellation wires itself with pulse signals', mode: 'web', chat: 'Routing through agent network...', isFavorite: true },
+        { state: 'weaving', label: 'Braid (Weaving)', blurb: 'three intertwined strands plait helically around sphere', mode: 'braid', chat: 'Integrating cross-lane diffs...', isFavorite: false },
+        { state: 'composing', label: 'Ribbon (Composing)', blurb: 'undulating multi-band harmonic sash', mode: 'ribbon', chat: 'Drafting response structure...', isFavorite: false },
+        { state: 'breathing', label: 'Ring (Breathing)', blurb: 'face-on harmonic ring slowly pulsing and morphing', mode: 'ring', chat: 'Awaiting operator direction...', isFavorite: false },
+        { state: 'shaping', label: 'Morph (Shaping)', blurb: 'geometric state transition: circle → triangle → square', mode: 'morph', chat: 'Adapting interface geometry...', isFavorite: false }
+      ];
+
+      let currentState = 'solving';
+      let isPaused = false;
+      let speedMul = 1.0;
+      let currentView = 'spotlight'; // 'spotlight' or 'grid'
+
+      const { MODE_DRAWS, resolvePreset } = window.ThinkingOrbsEngine;
+
+      // Canvas scaling helper with DPR transform
+      function setupCanvas(canvas, size) {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        canvas.width = Math.round(size * dpr);
+        canvas.height = Math.round(size * dpr);
+        canvas.style.width = size + 'px';
+        canvas.style.height = size + 'px';
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return ctx;
+      }
+
+      // Spotlight canvases
+      const canvas64 = document.getElementById('canvasSpotlight64');
+      const canvas20 = document.getElementById('canvasSpotlight20');
+      const canvasMini = document.getElementById('mini-thinking-orb');
+      let ctx64 = setupCanvas(canvas64, 64);
+      let ctx20 = setupCanvas(canvas20, 20);
+      let ctxMini = canvasMini ? setupCanvas(canvasMini, 16) : null;
+
+      // Build State Navigation Pills
+      const pillsContainer = document.getElementById('statePillsContainer');
+      STATES.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = `pill-btn px-3 py-1 rounded-full text-xs font-mono transition-all border whitespace-nowrap ${
+          item.state === currentState 
+            ? 'bg-emerald-500/20 text-emerald-400 font-bold border-emerald-500/50 shadow-sm' 
+            : item.isFavorite
+              ? 'bg-amber-500/10 text-amber-300 border-amber-500/30 hover:border-amber-400 font-medium'
+              : 'bg-black/40 text-slate-400 border-white/10 hover:text-white hover:border-white/20'
+        }`;
+        btn.dataset.state = item.state;
+        btn.textContent = (item.isFavorite ? '★ ' : '') + item.label;
+        btn.onclick = () => selectState(item.state);
+        pillsContainer.appendChild(btn);
+      });
+
+      // Build Grid View
+      const gridContainer = document.getElementById('gridContainer');
+      const gridCanvases = [];
+
+      STATES.forEach(item => {
+        const card = document.createElement('div');
+        const isFav = item.isFavorite;
+        card.className = `bg-[#0f1420] border ${isFav ? 'border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.15)]' : 'border-white/10'} rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 hover:bg-[#131b2c] transition-all relative group text-center space-y-2`;
+        
+        card.onclick = () => {
+          selectState(item.state);
+          document.getElementById('spotlightView').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+
+        if (isFav) {
+          const favBadge = document.createElement('div');
+          favBadge.className = 'text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 mb-1';
+          favBadge.textContent = '★ Operator Favorite';
+          card.appendChild(favBadge);
+        }
+
+        const cvs = document.createElement('canvas');
+        cvs.width = 128;
+        cvs.height = 128;
+        cvs.style.width = '64px';
+        cvs.style.height = '64px';
+        const ctx = setupCanvas(cvs, 64);
+
+        const title = document.createElement('div');
+        title.className = 'text-xs font-bold text-white mt-1 tracking-tight';
+        title.textContent = item.label;
+
+        const sub = document.createElement('div');
+        sub.className = 'text-[10px] text-slate-400 font-mono truncate max-w-full';
+        sub.textContent = item.blurb;
+
+        card.appendChild(cvs);
+        card.appendChild(title);
+        card.appendChild(sub);
+        gridContainer.appendChild(card);
+
+        gridCanvases.push({ canvas: cvs, ctx, state: item.state, card, item });
+      });
+
+      function selectState(stateKey) {
+        currentState = stateKey;
+        const found = STATES.find(s => s.state === stateKey);
+        if (!found) return;
+
+        // Update pills
+        document.querySelectorAll('.pill-btn').forEach(btn => {
+          const s = STATES.find(x => x.state === btn.dataset.state);
+          if (btn.dataset.state === stateKey) {
+            btn.className = 'pill-btn px-3 py-1 rounded-full text-xs font-mono font-bold whitespace-nowrap transition-all border bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-sm';
+          } else if (s && s.isFavorite) {
+            btn.className = 'pill-btn px-3 py-1 rounded-full text-xs font-mono font-medium whitespace-nowrap transition-all border bg-amber-500/10 text-amber-300 border-amber-500/30 hover:border-amber-400';
+          } else {
+            btn.className = 'pill-btn px-3 py-1 rounded-full text-xs font-mono font-normal whitespace-nowrap transition-all border bg-black/40 text-slate-400 border-white/10 hover:text-white hover:border-white/20';
+          }
+        });
+
+        // Update Spotlight Info
+        document.getElementById('spotlightTitle').textContent = found.label;
+        document.getElementById('spotlightBlurb').textContent = found.blurb;
+        document.getElementById('stateModeBadge').textContent = `mode: ${found.mode}`;
+        document.getElementById('chatSimText').textContent = found.chat;
+
+        const favBadge = document.getElementById('spotlightFavBadge');
+        if (favBadge) {
+          favBadge.style.display = found.isFavorite ? 'inline-block' : 'none';
+        }
+
+        // Highlight active card in grid
+        gridCanvases.forEach(g => {
+          const isFav = g.item.isFavorite;
+          if (g.state === stateKey) {
+            g.card.className = `bg-[#131b2c] border-2 border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all relative group text-center space-y-2`;
+          } else {
+            g.card.className = `bg-[#0f1420] border ${isFav ? 'border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.15)]' : 'border-white/10'} rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 hover:bg-[#131b2c] transition-all relative group text-center space-y-2`;
+          }
+        });
+      }
+
+      // Play / Pause
+      const playPauseBtn = document.getElementById('btnPlayPause');
+      const playPauseIcon = document.getElementById('playPauseIcon');
+      const playPauseText = document.getElementById('playPauseText');
+      playPauseBtn.onclick = () => {
+        isPaused = !isPaused;
+        playPauseIcon.textContent = isPaused ? '▶️' : '⏸';
+        playPauseText.textContent = isPaused ? 'Play' : 'Pause';
+      };
+
+      // Speed Controls
+      document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.onclick = () => {
+          speedMul = parseFloat(btn.dataset.speed);
+          document.querySelectorAll('.speed-btn').forEach(b => {
+            if (b === btn) {
+              b.className = 'speed-btn px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/40';
+            } else {
+              b.className = 'speed-btn px-2 py-0.5 rounded bg-black/40 text-slate-400 hover:text-white';
+            }
+          });
+        };
+      });
+
+      // Animation Loop
+      let lastTime = performance.now();
+      let accumulatedTime = 0;
+
+      function render(now) {
+        if (!now) now = performance.now();
+        const dt = Math.max(0, Math.min(0.1, (now - lastTime) / 1000));
+        lastTime = now;
+
+        if (!isPaused) {
+          accumulatedTime += dt * speedMul;
+        }
+
+        const isDark = true; // Dark palette mode
+
+        // 1. Render 64px spotlight
+        const p64 = resolvePreset(currentState, 64);
+        const draw64 = MODE_DRAWS[p64.mode];
+        ctx64.clearRect(0, 0, 64, 64);
+        draw64(ctx64, 64, accumulatedTime * p64.speed, isDark, p64.opts);
+
+        // 2. Render 20px spotlight
+        const p20 = resolvePreset(currentState, 20);
+        const draw20 = MODE_DRAWS[p20.mode];
+        ctx20.clearRect(0, 0, 20, 20);
+        draw20(ctx20, 20, accumulatedTime * p20.speed, isDark, p20.opts);
+
+        // 3. Render all 9 in grid simultaneously
+        gridCanvases.forEach(item => {
+          const p = resolvePreset(item.state, 64);
+          const draw = MODE_DRAWS[p.mode];
+          item.ctx.clearRect(0, 0, 64, 64);
+          draw(item.ctx, 64, accumulatedTime * p.speed, isDark, p.opts);
+        });
+
+        // 4. Render mini thinking indicator in Preset 2 if present
+        if (ctxMini) {
+          const pMini = resolvePreset(currentState, 20);
+          const drawMini = MODE_DRAWS[pMini.mode];
+          ctxMini.clearRect(0, 0, 16, 16);
+          drawMini(ctxMini, 16, accumulatedTime * pMini.speed, isDark, pMini.opts);
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      // Initial State Start - Default to favorite: Rubik's Cube!
+      selectState('solving');
+      requestAnimationFrame(render);
+    })();
+  </script>
+</body>
+</html>
