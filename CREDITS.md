@@ -48,11 +48,22 @@ documentation, not vendored source.
 
 Both libraries are open source under their respective licences. This pack ships documentation, architecture standards, and component recipes only.
 
+## Jakub Antalík (`Libraries.dev`) — optical border beam & glows engine
+
+[`skills/border-beam`](skills/border-beam/SKILL.md) and its
+[`THINKING_INDICATORS.md`](skills/border-beam/THINKING_INDICATORS.md) build upon the open-source optical architecture created by **Jakub Antalík** on [`Libraries.dev`](https://libraries.dev/):
+- Three-tier optical hierarchy: 1px razor hairline edge stroke via CSS `mask-composite: exclude`, hugging inner/out glow, and 32px Gaussian bloom.
+- 9-point radial gradient sub-pixel precision and ~30fps `requestAnimationFrame` pulse driver avoiding mobile GPU thermal throttling.
+
+## Archify (`tt-a1i/archify`) — interactive workflow diagrams
+
+The interactive diagrams in `docs/development_diagrams/` are authored and compiled with **Archify** ([`tt-a1i/archify`](https://github.com/tt-a1i/archify)) by **tt-a1i**, generating standalone SVG/HTML interactive walkthroughs with light/dark theme adaptation and state inspection.
+
 ## Everything else
 
-`ui-ux-pro-max` (design-system data and search scripts), `webm-alpha-video`, `animate-expo`,
-`write-swift`, the `/smh-designer` command and the frontend design guide were written for this
-command centre and are covered by the MIT licence above.
+`ui-ux-pro-max` (design-system data and search scripts), `border-beam`, `webm-alpha-video`, `animate-expo`,
+`write-swift`, the `/smh-designer` command, interactive visual studio, and the frontend design guide were assembled for this
+pack and are covered by the MIT licence above.
 
 ---
 

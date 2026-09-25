@@ -2,19 +2,94 @@
 
 **The house standard for world-class, fluid, production-ready interfaces.** This procedural guide establishes how agents and operators design, build, animate, and audit user interfaces across all projects.
 
-Consolidates the six pillars of house UI craft:
+Consolidates the seven pillars of house UI craft:
 1. **Design System & Visual Intelligence**: [`skills/ui-ux-pro-max`](../skills/ui-ux-pro-max/SKILL.md) — 67 styles, 96 color palettes, 57 font pairings, 99 UX heuristics, and stack guidelines via `search.py`.
 2. **Master Motion Engine & Fluid Interactions**: [`skills/emil-design-eng`](../skills/emil-design-eng/SKILL.md) — Consolidated Emil Kowalski motion craft, Apple 2-parameter spring physics, 4-gate opportunity filter, sub-300ms budget, and Before/After review tables.
 3. **WebGPU Shader Engine**: [`skills/vgpu`](../skills/vgpu/SKILL.md) — `vercel-labs/vgpu`, typed WGSL shaders, fullscreen fluid meshes, interactive plasma backdrops, particle compute, ~25KB bundle, and zero-GPU headless CI test adapters.
 4. **Mobile-First Apple Glass & Materials**: [`skills/apple-glass`](../skills/apple-glass/SKILL.md) — Apple HIG frosted glass (CSS/Tailwind with 180% saturation boost), optical liquid glass refraction over live DOM ([`@samasante/liquid-glass`](https://github.com/samasante/liquid-glass)), and native mobile bridges (React Native and SwiftUI iOS 26).
-5. **3D Spatial Models & Physical Materials**: [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) — Complete Poimandres suite ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber), Drei, Postprocessing, Rapier), glTF product models (`gltfjsx`), and 3D spatial transmission meshes.
+5. **3D Spatial Models & Geometry**: [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) — Complete Poimandres suite ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber), Drei, Postprocessing, Rapier), glTF product models (`gltfjsx`), and 3D spatial transmission meshes.
 6. **Rich Media & Platform Specialists**: [`skills/webm-alpha-video`](../skills/webm-alpha-video/SKILL.md) (green-screen to alpha WebM), [`skills/animate-expo`](../skills/animate-expo/SKILL.md) (React Native / Expo), [`skills/write-swift`](../skills/write-swift/SKILL.md) (iOS native).
+7. **Border Beam & Optical Glows Engine**: [`skills/border-beam`](../skills/border-beam/SKILL.md) — 3-tier sub-pixel stroke (`::after` with `mask-composite: exclude` / `-webkit-mask-composite: xor`), hugging inner glow (`::before`; on the `pulse-outside` halo that slot is the out glow instead), 32px Gaussian bloom (`[data-beam-bloom]`), Ocean/Sunset tokens, ~30fps `requestAnimationFrame` pulse driver (zero 120Hz CSS `@keyframes` throttling), and AI Thinking Indicators (Thinking Orb 2D canvas, Cosmic Nebula, Plasma Reactor). Vocabulary and interactive catalog: [`docs/development_diagrams/ui_effects_and_thinking_icons.html`](development_diagrams/ui_effects_and_thinking_icons.html).
 
 Front door: **`/smh-designer`** ([`commands/smh-designer.md`](../commands/smh-designer.md)) — activates **🦋 Caterpillar** with the Two-Phase Creative Vision Lock lifecycle.
 
 ---
 
-## 1. The Six Pillars of UI Excellence
+## 0. The Shared Vocabulary — how the operator talks about UI, and how you answer
+
+**Two documents, one set of words.** The operator reads the
+[UI vocabulary page](development_diagrams/ui_effects_and_thinking_icons.html) (HTML, with drawings
+and live demos). Agents read this guide. This section is the page's vocabulary in agent form. When
+either one changes, change both in the same commit.
+
+**Speak these words to the operator.** Use the on-screen names below, never the code names. Translate to code
+yourself. Code names go in plans and diffs only.
+
+### The request formula — five slots
+
+Every UI change requested fits one sentence: **WHERE** (device, theme, state) · **WHAT** (screen,
+then component) · **WHICH LAYER** · **WHICH KNOB** · **HOW MUCH** (direction and amount).
+
+- **When a request leaves a slot empty, ask for that slot in these words** before you plan, and
+  offer your best reading. Example: "Which layer: the edge ring, or the out glow?"
+- **Anchor every percent.** "Cut it in half" at 70% today could mean 35% or 50%. Ask the operator "half of
+  today, or 50% strength?".
+- **The worked case.** The operator asks to "cut the size-pulse-outside in half". That names the
+  whole effect, not a layer. The request as executed:
+  "On a phone, in dark mode, on the chat window: edge ring to 50%
+  strength; out glow to 50% strength and 60% reach; outer bloom back to 100%."
+
+### The layers of a glow — operator words and the code
+
+| Operator says | What they see | Where it sits | Border Beam code |
+|---|---|---|---|
+| **Edge ring** | the thin bright line on the border | on the border, 1px | `::after` · `--beam-stroke-opacity` |
+| **Out glow** | the colored glow hugging the border | behind the element: ~14px past the edge and shining in through the glass | **`pulse-outside` only:** `::before`, which the code calls "core" · `--beam-inner-opacity` · `--beam-glow-reach` · `--beam-core-blur` |
+| **Outer bloom** | the wide soft haze | ~42px past the edge, onto the page | `[data-beam-bloom]` · `--beam-bloom-opacity` · `--beam-bloom-blur` |
+| **Inner glow** | light pooled just inside the edge | inside only | `size="pulse-inner"`, and the `::before` of the traveling beams (`sm`, `md`, `line`) |
+| **Glass** | the see-through surface | the element itself | background alpha (tint) · `backdrop-filter: blur()` (frost) |
+| **Halo** | all of the above breathing together | the whole effect | `size="pulse-outside"` |
+
+⛔ **The misnomer that costs time.** On the `pulse-outside` halo, `::before` is "core" and its
+strength hook is `--beam-inner-opacity`, yet it is the **out glow**, outside the edge. Never call it an
+inner glow to the operator. On a phone a chat window fills the screen, so the bloom and the outer half of the out
+glow are off-screen: what is visible there is the edge ring and the out glow's reach inward.
+
+### The six knobs
+
+| Knob | Means | Code | Operator words |
+|---|---|---|---|
+| **Strength** | how visible, 0–100% | opacity, alpha | dimmer, brighter, half as strong |
+| **Reach** | how far it extends, out or in | size, spread, scale | smaller, pull it in, reach 60% |
+| **Softness** | how fuzzy the edge | blur | softer, crisper |
+| **Speed** | seconds per cycle; bigger is slower | duration | slower, calmer |
+| **Color** | hue, saturation (vivid), brightness, palette | palette, hue-rotate, saturate | more blue, less vivid, use Sunset |
+| **Motion** | the kind of movement | preset, travel | breathe, orbit, sweep, shimmer, drift |
+
+"Bigger" can mean strength or reach, and "calmer" usually means speed. Ask which.
+
+### Pairs that get mixed up
+
+`size="…"` names the effect; how big it is lives under reach · padding (inside), margin (outside), gap
+(between) · border (takes space) vs outline (takes none) vs focus ring · shadow (dark, below) vs glow
+(light, around) · blur (the thing) vs frost (what's behind the glass) · opacity (see-through) vs
+brightness (darker, still solid) · modal (blocks, center) vs drawer (from a side) vs sheet (from the
+bottom, phones) vs popover (beside its trigger) · toast (leaves) vs banner (stays) vs tooltip (hover) ·
+hover (mouse) vs focus (keyboard or cursor) vs pressed (the tap) · transition (once, on change) vs
+animation (on its own, often looping) · viewport (the screen) vs window (a panel in the app).
+
+### Screen sizes
+
+Mobile first: the phone is the base, and wider sizes add to it. Phone is 0–639px, then `sm` 640+,
+tablet `md` 768+, desktop `lg` 1024+, `xl` 1280+. Say "on a phone", "on a tablet" and "on desktop" to the operator.
+
+The full dictionary (layout, surfaces, edges, depth, color, type, motion, states, feedback, theme),
+the thinking spinners and the live Border Beam catalog are on the
+[page](development_diagrams/ui_effects_and_thinking_icons.html).
+
+---
+
+## 1. The Seven Pillars of UI Excellence
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -29,14 +104,16 @@ Front door: **`/smh-designer`** ([`commands/smh-designer.md`](../commands/smh-de
 │ • apple-glass                │ • visual-fx-3d               │ • webm-alpha  │
 │   (HIG frosted 180% saturate,│   (R3F 3D spatial scenes,    │ • animate-expo│
 │    live DOM liquid refraction│    glTF models, Rapier)      │ • write-swift │
-└──────────────────────────────┴──────────────────────────────┴───────────────┘
+├──────────────────────────────┴──────────────────────────────┴───────────────┤
+│ 7. BORDER BEAM & OPTICAL GLOWS ENGINE (border-beam)                         │
+│ • 3-tier sub-pixel stroke (mask-composite), inner/out glow, Gaussian bloom  │
+│ • ~30fps rAF pulse driver, Ocean/Sunset tokens, AI Thinking Indicators      │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Mobile First, Always (The House Foundation)
-
-> **Operator ruling 2026-09-06 (AVCH-133):** *"We always build mobile first then out to desktop... it looks bad on mobile and that's 90% of our users."* This is an absolute invariant across all projects.
+## 2. Mobile First, Always (The Foundation)
 
 ### The Invariant
 - **Design, build, and REVIEW the phone render before desktop.** Base CSS rule is the phone viewport (375px); `min-width` / Tailwind `sm:`, `md:`, `lg:` enhance OUT.
@@ -45,153 +122,95 @@ Front door: **`/smh-designer`** ([`commands/smh-designer.md`](../commands/smh-de
 - **Screenshot mobile first:** Always present the mobile render first when handing work back for review.
 - **Dual-Viewport Layout Verification:** A layout suite that measures only one viewport has a blind spot. Any automated spec or manual QA asserting geometry, overflow, or element positioning must run at **BOTH** a phone (e.g. 375x667) and a desktop viewport.
 
-### Real-World Lesson: The AVCH-133 Breakdown
-On AVCH-133 the investor surface (/about) rebuild shipped three severe regressions caught by the operator on device because E2E tests only ran at one viewport:
-1. **Header Chip Collision:** A `CONFIDENTIAL ACCESS` badge wrapped to two lines in the mobile header, crushing the site logo against the hamburger menu.
-2. **Text Clamp Overflow:** A headline styled with unconstrained `clamp(52px, ...)` broke awkwardly as "The Self- / Learning / Tutor System" edge-to-edge at 375px with zero horizontal margin.
-3. **GPU Thermal Collapse:** A background light field of seven full-viewport layers rendered with 38px blur and `mix-blend-mode: screen` while panels simultaneously executed `backdrop-filter: blur(20px)` — compounding the two most expensive operations a mobile GPU can execute.
+---
 
-Every assertion in the single-viewport test suite stayed green. Testing dual viewports and designing mobile-first eliminates these regressions before delivery.
+## 3. Motion & Animation Standards ([`emil-design-eng`](../skills/emil-design-eng/SKILL.md))
+
+Motion should communicate physical weight and momentum, not decorate:
+
+- **The Sub-300ms UI Budget:** Standard UI transitions (modals, dropdowns, drawer expansions, card reveals) must complete within $\le 300\text{ms}$. Longer animations make interfaces feel sluggish.
+- **Never Use `ease-in`:** Never use `ease-in` curves for enter transitions. Ease-in delays initial movement, creating perceptual lag. Always use custom spring physics or crisp `ease-out`.
+- **Never Animate from `scale(0)`:** Zooming elements from zero looks unnatural. Enter scale should start at `scale(0.95)` with opacity `0` and spring into `scale(1)`.
+- **GPU Transform Rules:** Only animate `transform` (`translate3d`, `scale`) and `opacity`. Never trigger browser layout reflows by animating `width`, `height`, `top`, `left`, `margin`, or `padding`.
+- **Interruptible Physics:** Gestures (sheet pulls, pan dismissals) must update 1:1 with pointer coordinates and hand off velocity smoothly on release via spring physics.
 
 ---
 
-## 3. Universal Animation & Motion Law
+## 4. Advanced Visual FX, 3D & Shaders
 
-Great animation is unseen correctness. In our systems, animation is not decoration tacked on after layout; it is the physical feedback layer that connects user intention to state change.
+Three dedicated engines govern visual craft beyond flat CSS:
 
-### The Decision Framework
-Before writing any animation code, walk these four questions in order:
+### 1. Mobile-First Apple Frosted & Liquid Glass ([`apple-glass`](../skills/apple-glass/SKILL.md))
+- **Tier 1 (95% of UI):** Hardware-composited Apple HIG frosted glass via CSS `backdrop-filter: blur(20px) saturate(180%)`, subtle neutral border, and specular highlight. Runs on the GPU compositor at locked 60/120fps with zero JavaScript overhead.
+- **Tier 2 (Physical Lenses):** Liquid glass with true optical refraction and chromatic dispersion via `@samasante/liquid-glass` (WebKit-hardened SVG Signed Distance Field displacement over live interactive DOM).
+- **Tier 3 (Native Mobile):** `@callstack/liquid-glass` for React Native and iOS 26 SwiftUI `.glassEffect()`.
+- ⛔ **Strict Ban on Canvas Hacks:** Never use `html2canvas` or 3D WebGL canvases for 2D UI elements.
 
-1. **Should this animate at all?**
-   - **100+ times/day (command palettes, keyboard shortcuts, fast navigation):** **NO animation. Ever.** Raycast-style instant state changes.
-   - **Tens of times/day (hover effects, list selects):** Ultra-fast ($\le 150\text{ms}$) or no motion.
-   - **Occasional (modals, drawers, toasts):** Standard smooth animation ($150\text{--}300\text{ms}$).
-   - **First-time / milestone (onboarding, success celebrations):** Expressive, delightful motion.
+### 2. WebGPU Shaders ([`vgpu`](../skills/vgpu/SKILL.md))
+- Typed WGSL modules for fullscreen ambient fluid meshes, audio-reactive ripples, and particle compute.
+- Always implement the **WebGPU Fallback Guard**: verify `navigator.gpu` and render CSS gradient backdrops on unsupported devices.
 
-2. **What easing should it use?**
-   - **Entering elements:** `ease-out` (starts instantly, feels responsive to the user's action).
-   - **Exiting elements:** `ease-out` or fast `ease-in-out` ($\le 200\text{ms}$).
-   - **Moving / morphing on-screen:** `ease-in-out` or physical spring.
-   - ⛔ **NEVER use `ease-in` for UI animations.** It delays the initial movement, making the app feel laggy and sluggish.
-   - **Custom curves beat default CSS:**
-     ```css
-     /* Strong ease-out for snappy UI */
-     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-     /* Natural on-screen movement */
-     --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-     /* iOS-style sheet/drawer curve */
-     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-     ```
+### 3. 3D Spatial Models & R3F ([`visual-fx-3d`](../skills/visual-fx-3d/SKILL.md))
+- High-end 3D product models, interactive spatial cards, and physics via React Three Fiber ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber)), Drei, and Rapier.
+- **On-Demand Rendering Invariant:** Always configure `<Canvas frameloop="demand" dpr={[1, 1.5]}>` to avoid draining mobile battery while idle.
+- Reserved strictly for 3D meshes and spatial scenes, never HTML DOM cards.
 
-3. **How fast should it be?**
-   - **Button press feedback:** $100\text{--}160\text{ms}$.
-   - **Tooltips & popovers:** $125\text{--}200\text{ms}$.
-   - **Dropdowns & selects:** $150\text{--}250\text{ms}$.
-   - **Modals & bottom sheets:** $200\text{--}350\text{ms}$.
-   - **Hard Rule:** Standard UI interactions must stay under $300\text{ms}$.
-
-4. **Springs vs Duration?**
-   - Use **springs** for gesture-driven interactions, drag-and-drop, drawers, and interruptible UI.
-   - **Apple 2-parameter spring model:**
-     - Default UI (no bounce): `damping: 1.0`, `response: 0.3-0.4s` (`{ type: "spring", duration: 0.4, bounce: 0 }`).
-     - Momentum flick / throw: `damping: ~0.8`, `response: 0.3-0.4s` (`{ type: "spring", duration: 0.4, bounce: 0.2 }`).
-
----
-
-## 3. Core Component Building Rules
-
-### A. Buttons & Pressables
-- **Instant feedback on press:** Always add `transform: scale(0.97)` on `:active`.
-  ```css
-  .button {
-    transition: transform 160ms ease-out;
-  }
-  .button:active {
-    transform: scale(0.97);
-  }
-  ```
-- **Never animate from `scale(0)`:** Nothing in reality appears from a mathematical point. Start from `scale(0.95)` with `opacity: 0`.
-
-### B. Popovers, Dropdowns & Modals
-- **Origin awareness:** Popovers and dropdowns must scale in from their triggering button (`transform-origin: var(--transform-origin)`).
-- **Modals are exempt:** Modals appear centered in the viewport and keep `transform-origin: center`.
-
-### C. Tooltips
-- **First hover:** Normal brief delay (~300ms) to avoid accidental triggers while scanning.
-- **Subsequent hovers:** Instant appearance (`transition-duration: 0ms`) while the pointer moves across sibling toolbar icons.
-
-### D. Translucent Materials & Depth
-- Translucent chrome (`backdrop-filter: blur(20px) saturate(180%)`) lets content scroll beneath navigation bars without feeling disconnected.
-- Never stack light translucent layers on other translucent layers (legibility collapse).
-- In dark mode, use subtle semi-transparent white borders (`border: 1px solid rgba(255, 255, 255, 0.1)`) instead of black borders.
-
----
-
-## 4. WebGPU Shaders (`vgpu`), Apple Glass (`apple-glass`) & 3D Spatial Models (`visual-fx-3d`)
-
-Modern interfaces incorporate physical depth, optical light refraction, and GPU-accelerated fluid shaders. We enforce a clean three-tier engine separation:
-
-### A. WebGPU Shader & Compute Engine ([`skills/vgpu`](../skills/vgpu/SKILL.md))
-- **Primary Use:** Fullscreen ambient fluid meshes, interactive plasma backdrops, audio-reactive ripples, and particle compute simulations.
-- **Bundle Efficiency:** ~25KB gzipped (10x smaller than Three.js).
-- **Headless CI Testing:** Deterministic execution without physical GPU hardware using `@vgpu/adapter-mock` and `@vgpu/adapter-node`.
-- **Mandatory Mobile Guard:** WebGPU is unsupported on iOS $\le 17$, older Android, and default Linux Firefox. Always verify `navigator.gpu` and provide a graceful CSS gradient or SVG backdrop.
-
-### B. Mobile-First Apple Glass & Materials ([`skills/apple-glass`](../skills/apple-glass/SKILL.md))
-- **Primary Use:** Authentic Apple frosted glass (HIG) for web and mobile apps, plus true optical liquid glass refraction over live DOM elements without canvas hacks.
-- **Tier 1 (95% of UI):** Apple HIG Frosted Glass via CSS & Tailwind (`backdrop-blur-xl`, `backdrop-saturate-180`, `border border-white/20`, and top specular rim gradient). Zero JS overhead, locked 60/120fps on mobile Safari.
-- **Tier 2 (Physical Lenses):** [`@samasante/liquid-glass`](https://github.com/samasante/liquid-glass) using SVG Signed Distance Field (SDF) filters over live DOM elements. Real optical bending and chromatic dispersion with 0 dependencies (<5KB).
-- **Tier 3 (Native Mobile):** `@callstack/liquid-glass` for React Native / Expo, and SwiftUI iOS 26 `.glassEffect()` for native iOS.
-- **Strict Invariant:** Never use `html2canvas` screenshotting or Three.js 3D WebGL canvases for 2D UI elements. See [`RECIPES.md`](../skills/apple-glass/RECIPES.md) for complete components.
-
-### C. 3D Spatial Models & Geometry ([`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md))
-- **Primary Use:** Complete Poimandres suite ([`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber), `@react-three/drei`, `@react-three/postprocessing`, `@react-three/rapier`), glTF/GLB product models compiled via `gltfjsx`, tactile spring-damped tilt cards (`PresentationControls`), spatial lighting, and true 3D spatial transmission meshes. See [`CATALOG.md`](../skills/visual-fx-3d/CATALOG.md) and [`RECIPES.md`](../skills/visual-fx-3d/RECIPES.md).
-- **Constraints:** Always use `frameloop="demand"` and cap `dpr={[1, 1.5]}` so the GPU completely idles when static. Halt rendering when off-screen via `IntersectionObserver`. Reserved strictly for 3D meshes and spatial models, not HTML DOM UI.
+### 4. Border Beam & Optical Glows Engine ([`border-beam`](../skills/border-beam/SKILL.md))
+- **3-Tier Separation:** Tier 1 razor stroke (`::after` with `mask-composite: exclude`), Tier 2 inner/out glow (`::before`), Tier 3 Gaussian bloom (`[data-beam-bloom]`).
+- **Presets:**
+  - `size="line"` / `travel="sweep"`: Bottom Rim Sweep with anti-phase flicker (search inputs, chat input bars).
+  - `size="line"` / `travel="loop"`: Full perimeter traveling laser line (interactive cards, modals).
+  - `size="circle"` / `travel="orbit"`: Continuous 360° hairline laser orbit (avatars, round action buttons).
+  - `size="edge-shimmer"`: Single boundary edge rim shimmer (drawers, dividers).
+  - `size="pulse-outside"`: The halo (edge ring, out glow ~14px past edge, outer bloom).
+  - `size="sm"`: Compact action pill highlight.
+- **Shared Pulse Driver (~30fps):** Drive pulses through a shared ~30fps `requestAnimationFrame` pulse driver rather than unthrottled 120Hz CSS keyframes.
+- **AI Thinking Indicators:** 2D Canvas Thinking Orb (3 orbital particle rings, 0 WebGL overhead), Cosmic Nebula, Plasma Reactor.
+- **Interactive Visual Studio:** [`docs/development_diagrams/ui_effects_and_thinking_icons.html`](development_diagrams/ui_effects_and_thinking_icons.html).
 
 ---
 
 ## 5. Rich Media & Transparent Video ([`webm-alpha-video`](../skills/webm-alpha-video/SKILL.md))
 
-When user interfaces require floating video elements (e.g. animated mascots, floating holographic badges, voice-assistant reaction avatars):
-- Green-screen MP4 videos can be converted to true transparent WebM videos (`VP9` codec with `yuva420p` pixel format).
-- Run the ffmpeg chromakey conversion pipeline via [`skills/webm-alpha-video`](../skills/webm-alpha-video/SKILL.md):
+When user interfaces require floating video elements (mascots, holographic badges, voice reaction avatars):
+- Convert green-screen MP4 videos to transparent WebM (`VP9` with `yuva420p`):
   ```bash
   ffmpeg -i input_greenscreen.mp4 -vf "colorkey=0x00FF00:0.3:0.1,format=yuva420p" -c:v libvpx-vp9 -b:v 2M output_alpha.webm
   ```
-- Embed cleanly in web frontends with `<video autoPlay loop muted playsInline className="pointer-events-none ...">`.
+- Embed cleanly with `<video autoPlay loop muted playsInline className="pointer-events-none ...">`.
 
 ---
 
-## 6. The Two-Phase Creative Vision Lock Lifecycle (`/smh-designer`)
+## 6. The Two-Phase Creative Vision Lock Lifecycle ([`smh-designer`](../commands/smh-designer.md))
 
 Front-end design is sensory. To avoid coding the wrong visual aesthetic, [`/smh-designer`](../commands/smh-designer.md) enforces a two-phase gate:
 
 ```
 Phase 1: Creative Discovery & Vision Lock
   ↳ Interview on aesthetic mood, physics, and materials
-  ↳ Deliver Creative Vision Brief
-  ↳ ⛔ STOP FOR APPROVAL: the operator confirms "Approved"
+  ↳ Deliver Creative Vision Brief (palette, typography, layout, motion curves, shaders)
+  ↳ ⛔ STOP FOR APPROVAL: Operator confirms "Approved"
 
 Phase 2: Technical Translation
-  ↳ Deliver formal implementation_plan.md
-  ↳ ⛔ STOP FOR APPROVAL: the operator confirms "Approved"
+  ↳ Deliver formal implementation_plan.md (components, props, bundle budget, test plan)
+  ↳ ⛔ STOP FOR APPROVAL: Operator confirms "Approved"
 
-Then: hand the approved plan to whatever build lane you use.
+Hand-off to Build Lane
+  ↳ Hand approved implementation_plan.md to your build workflow or agent
 ```
 
 ---
 
 ## 7. Agent Skill Routing Matrix
 
-When an agent needs to perform UI/UX work, route to the appropriate consolidated master skill:
-
 | Task | Primary Skill | Supporting Resources / Capabilities |
 |---|---|---|
 | Complete design systems, color palettes, font pairings, styles | [`skills/ui-ux-pro-max`](../skills/ui-ux-pro-max/SKILL.md) | `search.py --design-system` |
 | Motion craft, animations, easings, spring physics, review tables, toasts | [`skills/emil-design-eng`](../skills/emil-design-eng/SKILL.md) | `RECIPES.md` · Apple 2-parameter springs · Before/After tables |
 | WebGPU shaders, fullscreen ambient fluid meshes, interactive plasma, particle compute | [`skills/vgpu`](../skills/vgpu/SKILL.md) | typed WGSL · @vgpu/adapter-mock · mobile CSS fallback |
-| Apple frosted glass (HIG), live DOM liquid refraction, native mobile glass | [`skills/apple-glass`](../skills/apple-glass/SKILL.md) | `RECIPES.md` · @samasante/liquid-glass · 120fps compositor · no canvas hacks |
-| 3D spatial scenes, glTF models, geometric cards, physical optical 3D meshes | [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) | [`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber) · Drei · Postprocessing · Rapier |
+| Apple frosted glass, optical liquid glass refraction, mobile-first glassmorphism | [`skills/apple-glass`](../skills/apple-glass/SKILL.md) | Apple HIG frosted glass · @samasante/liquid-glass live DOM refraction · 180% saturation · locked 120fps mobile |
+| 3D spatial scenes, glTF models, geometric cards, 3D physics | [`skills/visual-fx-3d`](../skills/visual-fx-3d/SKILL.md) | [`pmndrs/react-three-fiber`](https://github.com/pmndrs/react-three-fiber) · Drei · Postprocessing · Rapier |
+| Border beam optical glows, sub-pixel strokes, Gaussian blooms, AI thinking indicators | [`skills/border-beam`](../skills/border-beam/SKILL.md) | 3-tier optical architecture · ~30fps rAF pulse driver · Ocean/Sunset palettes · Thinking Orb 2D canvas |
 | Mobile gestures & animations (React Native / Expo Reanimated) | [`skills/animate-expo`](../skills/animate-expo/SKILL.md) | Worklets & reanimated recipes |
 | Apple platform UI & native Swift motion | [`skills/write-swift`](../skills/write-swift/SKILL.md) | Native SwiftUI springs & gestures |
 | Converting green-screen assets to transparent WebM video overlays | [`skills/webm-alpha-video`](../skills/webm-alpha-video/SKILL.md) | ffmpeg colorkey scripts |
@@ -201,7 +220,7 @@ When an agent needs to perform UI/UX work, route to the appropriate consolidated
 
 ## 8. Pre-Delivery UI Quality Checklist
 
-Before completing any frontend story, chore, or UI refactor, verify against this checklist:
+Before completing any frontend feature, chore, or UI refactor, verify against this checklist:
 
 ### Visual Quality
 - [ ] **No Emoji Icons:** Use consistent SVG icon sets (Lucide, Heroicons, Simple Icons) instead of emoji characters.
@@ -225,4 +244,4 @@ Before completing any frontend story, chore, or UI refactor, verify against this
 - [ ] **Performance Budget on Mobile:** Heavy backdrop-blur filters (`backdrop-blur-xl`), massive gradients, or complex SVG overlays are simplified or disabled on low-power mobile devices.
 - [ ] **Dual-Viewport Verification:** Explicitly tested and verified at both mobile (375×667 / 390×844) and desktop (1280×800 / 1440×900) resolutions before sign-off.
 - [ ] **WebGPU Fallback Guard:** Any component utilizing `vgpu` verifies `navigator.gpu` and renders a CSS gradient or SVG fallback on unsupported devices (iOS $\le 17$, legacy Android).
-
+- [ ] **Border Beam & Glow Invariants:** Optical glows use 3-tier separation (razor stroke mask, inner/out glow, Gaussian bloom) driven by the ~30fps rAF pulse driver. No single-layer box shadows or unthrottled 120Hz CSS keyframe animations.
