@@ -214,6 +214,7 @@ Hand-off to Build Lane
 | Mobile gestures & animations (React Native / Expo Reanimated) | [`skills/animate-expo`](../skills/animate-expo/SKILL.md) | Worklets & reanimated recipes |
 | Apple platform UI & native Swift motion | [`skills/write-swift`](../skills/write-swift/SKILL.md) | Native SwiftUI springs & gestures |
 | Converting green-screen assets to transparent WebM video overlays | [`skills/webm-alpha-video`](../skills/webm-alpha-video/SKILL.md) | ffmpeg colorkey scripts |
+| Living website with Spline 3D, Higgsfield scroll cinema, Claude motion | [`skills/living-site`](../skills/living-site/SKILL.md) | 3-Level Motion Architecture · `check.py` · `tools/film_chain.sh` |
 | End-to-end design engineering persona with Two-Phase Vision Lock | [`commands/smh-designer.md`](../commands/smh-designer.md) | 🦋 Caterpillar — Brainstorm, Audit, Scaffold & Build |
 
 ---
@@ -245,3 +246,25 @@ Before completing any frontend feature, chore, or UI refactor, verify against th
 - [ ] **Dual-Viewport Verification:** Explicitly tested and verified at both mobile (375×667 / 390×844) and desktop (1280×800 / 1440×900) resolutions before sign-off.
 - [ ] **WebGPU Fallback Guard:** Any component utilizing `vgpu` verifies `navigator.gpu` and renders a CSS gradient or SVG fallback on unsupported devices (iOS $\le 17$, legacy Android).
 - [ ] **Border Beam & Glow Invariants:** Optical glows use 3-tier separation (razor stroke mask, inner/out glow, Gaussian bloom) driven by the ~30fps rAF pulse driver. No single-layer box shadows or unthrottled 120Hz CSS keyframe animations.
+
+---
+
+## 9. Living Site & 3-Level Motion Architecture ([`living-site`](../skills/living-site/SKILL.md))
+
+A living website layers three purposeful motion tiers onto a layout cloned from a proven reference site ([`references/page-laws.md`](../skills/living-site/references/page-laws.md)):
+
+1. **Level 1 — Live 3D Showpiece ([`references/level-1-3d.md`](../skills/living-site/references/level-1-3d.md)):** One hero 3D object built via Spline MCP (`https://mcp.spline.design/mcp`) or R3F. Every embedded Spline iframe is covered by [`runtime/spline-shield.js`](../skills/living-site/runtime/spline-shield.js) so pointer motion reaches the scene via `postMessage` while mouse wheel scroll is never trapped.
+2. **Level 2 — Continuous Single-Shot Higgsfield Scroll Film ([`references/level-2-higgsfield.md`](../skills/living-site/references/level-2-higgsfield.md)):** 3 to 5 chained keyframes rendered via `tools/gen_image.sh` (`nano_banana_2`) and `tools/film_chain.sh` (`seedance`), scanned for hidden cuts with `tools/cutscan.py`, verified with `tools/continuity-gate.sh`, and framed beside word-lit captions ([`recipes/split-film.html`](../skills/living-site/recipes/split-film.html)).
+3. **Level 3 — Self-Drawing Claude Motion Diagrams ([`references/level-3-motion.md`](../skills/living-site/references/level-3-motion.md)):** Product architecture diagrams that build in at 30% viewport visibility, pulse packets along self-drawing wires ([`recipes/living-pipeline.js`](../skills/living-site/recipes/living-pipeline.js)), pause off-screen, and honor `prefers-reduced-motion` via [`runtime/motion-switch.js`](../skills/living-site/runtime/motion-switch.js).
+4. **Automated Gate:** Run `python3 skills/living-site/check.py <index.html>` and headless two-shot motion verification via `tools/shots.js` before delivery.
+
+---
+
+## 10. The 7-Layer 3D Production Factory & 4-Gate Gauntlet ([`FACTORY.md`](../skills/visual-fx-3d/FACTORY.md))
+
+For full Next.js App Router + React Three Fiber applications, [`FACTORY.md`](../skills/visual-fx-3d/FACTORY.md) codifies the 7-layer stack and locked benchmarks ([`https://press.stripe.com`](https://press.stripe.com) for 3D hardcover/passport spine opening and page-turn choreography; [`https://www.apple.com/iphone-18-pro/`](https://www.apple.com/iphone-18-pro/) for Z-axis spatial camera zoom):
+
+- **Layer 1 & 2 (State, Tokens & X-Ray Drawer):** Next.js `'use client'` + `dynamic(..., { ssr: false })` isolation, `use3DDirectorStore` (`zustand` `getState()` read transiently inside `useFrame` with zero React re-renders), and the live `XRayDirectorDrawer` (switching typography presets, `#0B0C10` Dark / `#F9F9FB` Light luxury themes, and X-Ray telemetry badges).
+- **Layer 3 & 4 (3D Book/Passport Engine & Scroll Physics):** `Interactive3DBookEngine` (0–20% Apple Z-axis zoom, 20–35% Stripe Press spine unfold and left-column dock, 35–100% sequential page flips) driven by `useScrollCameraDirector` (`Lenis` + GSAP `ScrollTrigger` `scrub: 1.2`) and Draco-compressed `.glb` pipelines (`@gltf-transform/cli` + `gltfjsx`).
+- **Layer 5 & 6 (Higgsfield Pilot Protocol & 60FPS Viseme Avatar):** Pilot-first `@higgsfield/cli` generation (`soul-id`, `nano_banana_2`, `seedance_2_5`) paired with `VisemeCanvasEngine` — a 2-layer 60fps HTML5 `<canvas>` compositor that overlays radial-gradient feathered mouth viseme sprites (`sil | aa | ee | oo`) onto a looping locked-head idle `<video>` spine driven by a Web Audio API `AnalyserNode` (`fftSize = 512`) or `wawa-lipsync`.
+- **Layer 7 (The 4-Gate Gauntlet Loop):** (1) Playwright `1440x900` + `390x844` screenshots across `0%`, `33%`, `66%`, `100%` scroll depth; (2) `< 100` WebGL draw calls (`r3f-perf`) and `check.py` / `cutscan.py` / `continuity-gate.sh` PASS; (3) Anti-Slop layout & copy audit (`taste-skill` + `humanizer` + [`references/copy.md`](../skills/living-site/references/copy.md)); (4) autonomous remediation before hand-back.
