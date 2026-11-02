@@ -1,8 +1,8 @@
 # 🦋 design-engineer-skills
 
-**A Lead Design Engineer for your coding agent.** Ten interlocking skills and one command that turn
+**A Lead Design Engineer for your coding agent.** Eleven interlocking skills and one command that turn
 an agent into a front-end craftsman: design systems, Apple spring physics, WebGPU shaders, optical
-liquid glass, React Three Fiber scenes, and native mobile motion.
+liquid glass, living websites, 7-layer 3D production factories, and native mobile motion.
 
 The front door is **`/smh-designer`**, which activates **🦋 Caterpillar** and runs a two-phase
 *Creative Vision Lock* — it agrees the aesthetic direction with you **before** it writes a line of
@@ -43,7 +43,7 @@ the README."** That is the whole install.
 >    at the top of `commands/smh-designer.md` still resolves from where you put the command file. If
 >    your layout differs from this pack's, **fix that one relative link** — it is the only path in the
 >    pack that depends on layout.
-> 6. Confirm to the operator that `/smh-designer` is available, and list the ten skills installed.
+> 6. Confirm to the operator that `/smh-designer` is available, and list the eleven skills installed.
 >
 > **Do not** edit the skill bodies during install. If something does not fit the operator's harness,
 > say so rather than improvising.
@@ -66,7 +66,8 @@ it exists so the same `/smh-designer` works in harnesses whose menus read skills
 | [`vgpu`](skills/vgpu/SKILL.md) | WebGPU shaders — typed WGSL, fullscreen fluid meshes, interactive plasma, particle compute, headless CI adapters. |
 | [`apple-glass`](skills/apple-glass/SKILL.md) | Mobile-first Apple frosted & liquid glass — Tier 1 CSS 180% saturation boost (120fps compositor), Tier 2 live DOM refraction via `@samasante/liquid-glass`, Tier 3 native `@callstack/liquid-glass` / SwiftUI `.glassEffect()`. Strict ban on desktop `html2canvas` and Three.js canvas hacks for 2D UI. Plus [`RECIPES.md`](skills/apple-glass/RECIPES.md). |
 | [`border-beam`](skills/border-beam/SKILL.md) | Multi-tiered optical border beam engine — 1px sub-pixel razor stroke (`mask-composite`), inner/out glow, 32px Gaussian bloom, ~30fps rAF pulse driver, and 2D canvas AI Thinking Indicators. Plus [`THINKING_INDICATORS.md`](skills/border-beam/THINKING_INDICATORS.md) and live studio [`docs/development_diagrams/ui_effects_and_thinking_icons.html`](docs/development_diagrams/ui_effects_and_thinking_icons.html). |
-| [`visual-fx-3d`](skills/visual-fx-3d/SKILL.md) | The Poimandres suite — R3F, Drei, Postprocessing, Rapier, glTF models, spatial 3D scenes (reserved for 3D meshes, not DOM UI). Plus [`CATALOG.md`](skills/visual-fx-3d/CATALOG.md) (100+ components) and [`RECIPES.md`](skills/visual-fx-3d/RECIPES.md). |
+| [`visual-fx-3d`](skills/visual-fx-3d/SKILL.md) | The Poimandres suite — R3F, Drei, Postprocessing, Rapier, glTF models, spatial 3D scenes (reserved for 3D meshes, not DOM UI). Plus [`CATALOG.md`](skills/visual-fx-3d/CATALOG.md), [`RECIPES.md`](skills/visual-fx-3d/RECIPES.md), and the 7-layer 3D & motion production factory [`FACTORY.md`](skills/visual-fx-3d/FACTORY.md) (Stripe Press + Apple iPhone 18 Pro benchmarks, X-Ray director drawer, 4-gate gauntlet). |
+| [`living-site`](skills/living-site/SKILL.md) | 3-Level motion architecture — Level 1 interactive Spline 3D showpiece, Level 2 continuous Higgsfield scroll cinema, Level 3 self-drawing Claude motion diagrams, protected by `runtime/spline-shield.js` and `check.py`. |
 | [`webm-alpha-video`](skills/webm-alpha-video/SKILL.md) | Green-screen to transparent alpha WebM overlays. |
 | [`animate-expo`](skills/animate-expo/SKILL.md) | React Native / Expo motion — Reanimated, Gesture Handler, haptics. |
 | [`write-swift`](skills/write-swift/SKILL.md) | Native iOS / Swift. |

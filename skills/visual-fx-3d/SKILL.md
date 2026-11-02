@@ -8,13 +8,15 @@ description: Declarative 3D scenes, spatial models, gltfjsx pipeline, interactiv
 The house engine for high-end modern 3D spatial craft: declarative 3D scene graphs, glTF/GLB product models, tactile spring-damped tilt physics, 3D mesh transmission materials, cinematic post-processing, and real-time rigid body physics.
 
 > **Architecture Boundaries:** 
-> - **2D UI Frosted Glass & Live-DOM Refraction:** Use [`.agents/skills/apple-glass`](../apple-glass/SKILL.md) (hardware-composited CSS and SDF displacement maps). Do NOT use `visual-fx-3d` or `MeshTransmissionMaterial` for 2D UI cards, tab bars, or buttons — 3D WebGL FBO multi-sampling exhausts mobile GPU memory and cannot refract HTML DOM elements underneath it.
-> - **2D Surface Shaders & Plasma Backdrops:** Use [`.agents/skills/vgpu`](../vgpu/SKILL.md) (~25KB typed WGSL).
+> - **2D UI Frosted Glass & Live-DOM Refraction:** Use [`apple-glass`](../apple-glass/SKILL.md) (hardware-composited CSS and SDF displacement maps). Do NOT use `visual-fx-3d` or `MeshTransmissionMaterial` for 2D UI cards, tab bars, or buttons — 3D WebGL FBO multi-sampling exhausts mobile GPU memory and cannot refract HTML DOM elements underneath it.
+> - **2D Surface Shaders & Plasma Backdrops:** Use [`vgpu`](../vgpu/SKILL.md) (~25KB typed WGSL).
 > - **3D Spatial Geometry & GLTF Product Scenes:** Use `visual-fx-3d` strictly for true 3D spatial geometry, glTF models, 3D physics, and 3D spatial materials.
 
 ### Deep Reference Documentation
 * **Component & Tool Encyclopedia:** [`CATALOG.md`](./CATALOG.md) (All 8 domains, 100+ components, imports, and props)
 * **Working Implementation Recipes:** [`RECIPES.md`](./RECIPES.md) (Copy-pasteable code examples for each tool category)
+* **The 7-Layer 3D & Motion Production Factory:** [`FACTORY.md`](./FACTORY.md) (Stripe Press + Apple iPhone 18 Pro `Interactive3DBookEngine`, `use3DDirectorStore`, `useScrollCameraDirector`, `@higgsfield/cli` Pilot Generation, 60fps `VisemeCanvasEngine`, `/design-system` `XRayDirectorDrawer`, and the 4-Gate Gauntlet Loop)
+* **3-Level Living Site Pipeline (Spline + Higgsfield + Claude Motion):** [`../living-site/SKILL.md`](../living-site/SKILL.md) (Reference cloning, `runtime/spline-shield.js`, `tools/film_chain.sh`, `recipes/living-pipeline.js`, and `check.py`)
 
 ---
 
